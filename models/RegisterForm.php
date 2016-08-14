@@ -11,6 +11,7 @@ use yii\base\Model;
 class RegisterForm extends Model
 {
     public $username;
+    public $email;
     public $password;
     public $password2;
 
@@ -23,13 +24,13 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
-            [['username', 'password', 'password2'], 'required'],
+            // required fields
+            [['username', 'email', 'password', 'password2'], 'required'],
             // password is validated by compareAttribute()
             ['password', 'compare', 'compareAttribute' => 'password2'],
-            // password is validated by validatePassword()
             ['username', 'validateUser'],
-            ['password', 'validatePassword'],
+            ['email', 'email'],
+            ['email', 'validateEmail'],
         ];
     }
 
@@ -44,7 +45,7 @@ class RegisterForm extends Model
     
     /**
      * Validates.
-     * This method serves as the inline validation for password.
+     * This method serves as the inline validation for username.
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
@@ -59,18 +60,12 @@ class RegisterForm extends Model
         }
     }
 
-    /**
-     * Validates.
-     * This method serves as the inline validation for password.
-     *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
-     */
-    public function validatePassword($attribute, $params)
-    {
-        return;
+    public function validateEmail($attribute, $params){
+        $user = User::findByEmail($this->email);
+        if ($user){
+            $this->addError($attribute, 'Нельзя задать такой адрес электронной почты.');
+        }
     }
-
     /**
      * @return boolean whether the user is registered successfully
      */
@@ -83,9 +78,16 @@ class RegisterForm extends Model
         if (!$this->getUser()){
             $user = new User();
             $user->username = $this->username;
-            $user->password = $this->password; 
+            $user->email = $this->email;
+            $user->password = User::getPasswordHash($this->password); 
             try{
                 $user->insert();
+                Yii::$app->mailer->compose()
+                    ->setTo('admin@example.com')
+                    ->setFrom([$this->email => $this->username])
+                    ->setSubject('Подтверждение регистрации на сайте')
+                    ->setTextBody('')
+                    ->send();                
             } catch (Exception $ex) {
                 $this->addError($ex, "Ошибка при регистрации пользователя");
                 return false;

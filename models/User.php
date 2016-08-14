@@ -44,6 +44,17 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Finds user by email
+     *
+     * @param  string      $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getId()
@@ -66,6 +77,16 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return $this->authKey === $authKey;
     }
+    
+    /** 
+     * Generate password hash
+     * 
+     * @param type string $password
+     * @return type string
+     */
+    public static function getPasswordHash($password){
+        return hash('md5', $password, false); 
+    }
 
     /**
      * Validates password
@@ -75,6 +96,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return $this->password === $this->getPasswordHash($password);
     }
 }
