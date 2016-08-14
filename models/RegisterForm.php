@@ -79,7 +79,8 @@ class RegisterForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->password = User::getPasswordHash($this->password); 
+            $user->password = User::getPasswordHash($this->password);
+            $user->usergroupid = UsersGroup::getUserGroupId();
             try{
                 $user->insert();
                 Yii::$app->mailer->compose()

@@ -5,17 +5,15 @@ namespace app\models;
  * property integer @id
  * property string @username
  * property string @password
- * property string @email
- * property string @usergroupid
  * property string @authKey
  * property string @accessToken
  */
 
-class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class Auth extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     public static function tableName()
     {
-        return 'users';
+        return 'user';
     }
     
     /**
