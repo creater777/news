@@ -5,12 +5,18 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "usersgroup".
+ * This is the model class for table "users".
  *
  * @property integer $id
- * @property string $groupname
+ * @property string $username
+ * @property string $password
+ * @property integer $active
+ * @property string $email
+ * @property integer $usergroupid
+ * @property string $authKey
+ * @property string $accessToken
  *
- * @property Users[] $users
+ * @property Usersgroup $usergroup
  */
 class UsersGroup extends \yii\db\ActiveRecord
 {
@@ -19,7 +25,7 @@ class UsersGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'usersgroup';
+        return 'users';
     }
 
     /**
@@ -28,7 +34,12 @@ class UsersGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['groupname'], 'string', 'max' => 40],
+            [['username', 'password', 'usergroupid', 'authKey', 'accessToken'], 'required'],
+            [['active', 'usergroupid'], 'integer'],
+            [['username', 'email'], 'string', 'max' => 255],
+            [['password', 'authKey', 'accessToken'], 'string', 'max' => 40],
+            [['username'], 'unique'],
+            [['usergroupid'], 'exist', 'skipOnError' => true, 'targetClass' => Usersgroup::className(), 'targetAttribute' => ['usergroupid' => 'id']],
         ];
     }
 
@@ -39,19 +50,30 @@ class UsersGroup extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'groupname' => 'Groupname',
+            'username' => 'Username',
+            'password' => 'Password',
+            'active' => 'Active',
+            'email' => 'Email',
+            'usergroupid' => 'Usergroupid',
+            'authKey' => 'Auth Key',
+            'accessToken' => 'Access Token',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUsers()
+    public function getUsergroup()
     {
-        return $this->hasMany(Users::className(), ['usergroupid' => 'id']);
+        return $this->hasOne(Usersgroup::className(), ['id' => 'usergroupid']);
     }
-    
-    public static function getUserGroupId(){
-        return 3;
+
+    /**
+     * @inheritdoc
+     * @return UsersQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new UsersQuery(get_called_class());
     }
 }

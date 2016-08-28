@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\NewsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'News';
+//$this->title = 'Новости';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-index">
@@ -29,7 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'date',
             'post:ntext',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header'=>'',
+                'headerOptions' => ['width' => '80'],
+                'template' => '{update} {view} {delete}',
+            ],
         ],
     ]); ?>
 </div>

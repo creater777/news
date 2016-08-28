@@ -4,14 +4,16 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use app\models\News;
-use app\models\NewsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+use app\models\News;
+use app\models\NewsSearch;
 use app\models\LoginForm;
 use app\models\RegisterForm;
 use app\models\ContactForm;
+use app\models\User;
 
 /**
  * SiteController implements the CRUD actions for News model.
@@ -24,17 +26,42 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'ruleConfig' => [
+//                    'class' => UserGroupRule::className(),
+//                ],
+//                'only' => ['view', 'create', 'update', 'delete'],
+//                'rules' => [
+//                    [
+//                        'actions' => ['view', 'logout'],
+//                        'allow' => true,
+//                        // Allow users, moderators and admins to create
+//                        'roles' => [
+//                            User::ROLE_USER,
+//                            User::ROLE_MODERATOR,
+//                            User::ROLE_ADMIN
+//                        ],
+//                    ],
+//                    [
+//                        'actions' => ['create', 'update'],
+//                        'allow' => true,
+//                        // Allow moderators and admins to update
+//                        'roles' => [
+//                            User::ROLE_MODERATOR,
+//                            User::ROLE_ADMIN
+//                        ],
+//                    ],
+//                    [
+//                        'actions' => ['delete', 'users'],
+//                        'allow' => true,
+//                        // Allow admins to delete
+//                        'roles' => [
+//                            User::ROLE_ADMIN
+//                        ],
+//                    ],
+//                ],
+//            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -60,7 +87,7 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
-        if (!\Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 

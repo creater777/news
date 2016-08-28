@@ -9,7 +9,7 @@ $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'controllerNamespace' => 'app\commands',
+    'controllerNamespace' => 'app\controllers',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -23,6 +23,9 @@ $config = [
             ],
         ],
         'db' => $db,
+        'authManager' => [
+            'class' => 'yii\rbac\DBManager',
+        ],
     ],
     'params' => $params,
 ];

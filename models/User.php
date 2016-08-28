@@ -1,37 +1,67 @@
 <?php
 
 namespace app\models;
-/**
- * property integer @id
- * property string @username
- * property string @password
- * property string @email
- * property string @usergroupid
- * property string @authKey
- * property string @accessToken
- */
 
+use Yii;
+
+/**
+ * This is the model class for table "users".
+ *
+ * @property integer $id
+ * @property string $username
+ * @property string $password
+ * @property integer $active
+ * @property string $email
+ * @property integer $usergroupid
+ * @property string $authKey
+ * @property string $accessToken
+ *
+ * @property Usersgroup $usergroup
+ */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    const ROLE_USER = 10;
+    const ROLE_MODERATOR = 20;
+    const ROLE_ADMIN = 30;
+
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
         return 'users';
     }
-    
+
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id)
+    public function rules()
     {
-        return static::findOne($id);
+        return [
+            [['username', 'password', 'usergroupid', 'authKey', 'accessToken'], 'required'],
+            [['active', 'usergroupid'], 'integer'],
+            [['username', 'email'], 'string', 'max' => 255],
+            [['password', 'authKey', 'accessToken'], 'string', 'max' => 40],
+            [['username'], 'unique'],
+            [['usergroupid'], 'exist', 'skipOnError' => true, 'targetClass' => Usersgroup::className(), 'targetAttribute' => ['usergroupid' => 'id']],
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function attributeLabels()
     {
-        return static::findOne(['accessToken' => $token]);
+        return [
+            'id' => 'ID',
+            'username' => 'Имя пользователя',
+            'password' => 'Пароль',
+            'active' => 'Активный',
+            'email' => 'Email',
+            'usergroupid' => 'Группа',
+            'authKey' => 'Код авторизации',
+            'accessToken' => 'Access Token',
+        ];
     }
 
     /**
@@ -58,7 +88,23 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     /**
      * @inheritdoc
+     * @return UsersQuery the active query used by this AR class.
      */
+    public static function find()
+    {
+        return new UsersQuery(get_called_class());
+    }
+    
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['access_token' => $token]);
+    }
+
     public function getId()
     {
         return $this->id;
@@ -78,6 +124,14 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authKey === $authKey;
+    }
+
+        /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsergroup()
+    {
+        return $this->hasOne(Usersgroup::className(), ['id' => 'usergroupid']);
     }
     
     /** 
