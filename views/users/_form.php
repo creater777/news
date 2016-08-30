@@ -20,8 +20,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'usergroupid')->textInput() ?>
-
     <?= $form->field($model, 'authKey')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'accessToken')->textInput(['maxlength' => true]) ?>

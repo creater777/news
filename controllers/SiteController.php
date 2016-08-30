@@ -32,29 +32,15 @@ class SiteController extends Controller
                 'rules' => [
                     [
                         'actions' => ['view', 'logout'],
-                        'allow' => Yii::$app->user->can($permissionName),
-                        // Allow users, moderators and admins to create
-                        'roles' => [
-                            User::ROLE_USER,
-                            User::ROLE_MODERATOR,
-                            User::ROLE_ADMIN
-                        ],
+                        'allow' => ['@'],
                     ],
                     [
                         'actions' => ['create', 'update'],
-                        'allow' => true,
-                        // Allow moderators and admins to update
-                        'roles' => [
-                            User::ROLE_MODERATOR,
-                            User::ROLE_ADMIN
-                        ],
+                        'allow' => Yii::$app->user->can(User::PERMISSION_EDITNEWS),
                     ],
                     [
                         'actions' => ['delete', 'users'],
-                        'allow' => true,
-                        'roles' => [
-                            User::ROLE_ADMIN
-                        ],
+                        'allow' => Yii::$app->user->can(User::PERMISSION_USEREDIT),
                     ],
                 ],
             ],

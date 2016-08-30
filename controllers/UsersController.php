@@ -23,9 +23,6 @@ class UsersController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'ruleConfig' => [
-                    'class' => UserGroupRule::className(),
-                ],
                 'only' => ['index', 'create', 'delete', 'update', 'view'],
                 'rules' => [
                     [

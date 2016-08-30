@@ -12,7 +12,6 @@ use Yii;
  * @property string $password
  * @property integer $active
  * @property string $email
- * @property integer $usergroupid
  * @property string $authKey
  * @property string $accessToken
  */
@@ -26,10 +25,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const PERMISSION_EDITNEWS = "editNews";
     const PERMISSION_USEREDIT = "userEdit";
 
-    public function __construct($userName) {
-        $this -> username = $userName;
-    }
-    
     /**
      * @inheritdoc
      */
@@ -44,8 +39,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password', 'usergroupid', 'authKey', 'accessToken'], 'required'],
-            [['active', 'usergroupid'], 'integer'],
+            [['username', 'password', 'authKey', 'accessToken'], 'required'],
+            [['active'], 'integer'],
             [['username', 'email'], 'string', 'max' => 255],
             [['password', 'authKey', 'accessToken'], 'string', 'max' => 40],
             [['username'], 'unique'],
@@ -66,6 +61,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'authKey' => 'Код авторизации',
             'accessToken' => 'Access Token',
         ];
+    }
+
+    public function setUserName($userName) {
+        $this -> username = $userName;
     }
 
     /**
@@ -90,15 +89,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return static::findOne(['email' => $email]);
     }
 
-    /**
-     * @inheritdoc
-     * @return UsersQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new UsersQuery(get_called_class());
-    }
-    
     public static function findIdentity($id)
     {
         return static::findOne($id);
@@ -130,14 +120,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->authKey === $authKey;
     }
 
-        /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsergroup()
-    {
-        return $this->hasOne(Usersgroup::className(), ['id' => 'usergroupid']);
-    }
-    
     /** 
      * Generate password hash
      * 
