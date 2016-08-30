@@ -15,15 +15,21 @@ use Yii;
  * @property integer $usergroupid
  * @property string $authKey
  * @property string $accessToken
- *
- * @property Usersgroup $usergroup
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    const ROLE_USER = 10;
-    const ROLE_MODERATOR = 20;
-    const ROLE_ADMIN = 30;
+    const ROLE_USER = "user";
+    const ROLE_MODERATOR = "moder";
+    const ROLE_ADMIN = "admin";
+    
+    const PERMISSION_VIEWNEWS = "viewNews";
+    const PERMISSION_EDITNEWS = "editNews";
+    const PERMISSION_USEREDIT = "userEdit";
 
+    public function __construct($userName) {
+        $this -> username = $userName;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -43,7 +49,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'email'], 'string', 'max' => 255],
             [['password', 'authKey', 'accessToken'], 'string', 'max' => 40],
             [['username'], 'unique'],
-            [['usergroupid'], 'exist', 'skipOnError' => true, 'targetClass' => Usersgroup::className(), 'targetAttribute' => ['usergroupid' => 'id']],
         ];
     }
 
@@ -58,7 +63,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'password' => 'Пароль',
             'active' => 'Активный',
             'email' => 'Email',
-            'usergroupid' => 'Группа',
             'authKey' => 'Код авторизации',
             'accessToken' => 'Access Token',
         ];
@@ -140,8 +144,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @param type string $password
      * @return type string
      */
-    public static function getPasswordHash($password){
-        return hash('md5', $password, false); 
+    public function getPasswordHash($password){
+        return hash('md5', $password + $this->email, false); 
     }
 
     /**
@@ -153,5 +157,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $this->getPasswordHash($password);
+    }
+    
+    public function setPassword($password){
+        $this->password = $this->getPasswordHash($password);
+    }
+    
+    public function activateUser(){
+        $this->active = 1;
     }
 }

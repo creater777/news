@@ -24,7 +24,8 @@
         "yiisoft/yii2-debug": "*"
     },
     "config": {
-        "process-timeout": 1800
+        "process-timeout": 1800,
+        "disable-tls": true
     },
     "scripts": {
         "post-create-project-cmd": [

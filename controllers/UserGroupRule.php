@@ -14,19 +14,17 @@ class UserGroupRule extends Rule
 //        return false;
 //    }
     
-    public $name = 'userRole';
-    
     public function execute($user, $item, $params)
     {
         //Получаем массив пользователя из базы
         $user = ArrayHelper::getValue($params, 'user', User::findOne($user));
         if ($user) {
-            $role = $user->usergroup;
-            if ($item->name === 'admin') {
+            $role = Yii::$app->authManager->getPermissionsByUser($user->getId())->ruleName;
+            if ($item->name === User::ROLE_ADMIN) {
                 return $role == User::ROLE_ADMIN;
-            } elseif ($item->name === 'moder') {
+            } elseif ($item->name === User::ROLE_MODER) {
                 return $role == User::ROLE_MODER;
-            } elseif ($item->name === 'user') {
+            } elseif ($item->name === User::ROLE_USER) {
                 return $role == User::ROLE_USER;
             }
         }

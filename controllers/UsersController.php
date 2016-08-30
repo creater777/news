@@ -21,23 +21,22 @@ class UsersController extends Controller
     public function behaviors()
     {
         return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                // We will override the default rule config with the new AccessRule class
-//                'ruleConfig' => [
-//                    'class' => UserGroupRule::className(),
-//                ],
-//                'only' => ['index', 'create', 'delete', 'update', 'view'],
-//                'rules' => [
-//                    [
-//                        'actions' => ['index', 'create', 'delete', 'update', 'view'],
-//                        'allow' => true,
-//                        'roles' => [
-//                            User::ROLE_ADMIN
-//                        ],
-//                    ],
-//                ],
-//            ],            
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => UserGroupRule::className(),
+                ],
+                'only' => ['index', 'create', 'delete', 'update', 'view'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'delete', 'update', 'view'],
+                        'allow' => true,
+                        'roles' => [
+                            User::ROLE_ADMIN
+                        ],
+                    ],
+                ],
+            ],            
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

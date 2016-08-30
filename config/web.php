@@ -9,7 +9,7 @@ $config = [
     'bootstrap' => ['log'],
     'modules' => [
         'rbac' =>  [
-            'class' => 'johnitvn\rbacplus\Module'
+            'class' => 'johnitvn\rbacplus\Module',
         ]       
     ],
     'components' => [

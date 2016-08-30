@@ -26,12 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'active',
             'email:email',
 //            'usergroup.groupname',
-            [
-                'header' => 'Группа',
-                'value' => function($model) {
-                    return $model->usergroup->groupname;
-                }
-            ],            
+//            [
+//                'header' => 'Группа',
+//                'value' => function($model) {
+//                    return $model->usergroup->groupname;
+//                }
+//            ],            
             // 'authKey',
             // 'accessToken',
 
