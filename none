@@ -128,3 +128,13 @@ I: Connecting to configured address/port: news:9001.
 E: Time-out connecting to client. :-(
 Log closed at 2016-08-30 20:56:52
 
+Log opened at 2016-08-31 07:10:01
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-08-31 07:10:02
+
+Log opened at 2016-08-31 07:51:30
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-08-31 07:51:30
+

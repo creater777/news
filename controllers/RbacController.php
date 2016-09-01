@@ -36,14 +36,13 @@ class RbacController extends Controller
         $moder = $auth->createRole(User::ROLE_MODERATOR);
         $moder->description = 'Модератор';
         $auth->add($moder);
-        $auth->addChild($moder,$viewNews);
+        $auth->addChild($moder,$user);
         $auth->addChild($moder,$editNews);
 
         $admin = $auth->createRole(User::ROLE_ADMIN);
         $admin->description = 'Администратор';
         $auth->add($admin);
-        $auth->addChild($admin,$viewNews);
-        $auth->addChild($admin,$editNews);
+        $auth->addChild($admin,$moder);
         $auth->addChild($admin,$userEdit);
         
         //Заведение администратора

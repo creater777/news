@@ -33,6 +33,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['view', 'logout'],
                         'allow' => ['@'],
+                        'roles' => [User::PERMISSION_VIEWNEWS],
                     ],
                     [
                         'actions' => ['create', 'update'],
