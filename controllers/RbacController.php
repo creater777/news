@@ -46,8 +46,10 @@ class RbacController extends Controller
         $auth->addChild($admin,$userEdit);
         
         //Заведение администратора
+        if ($adminUser=User::findByUsername("admin")){
+            $adminUser->delete();
+        }
         $adminUser = new User();
-        $adminUser->findByUsername("admin")->delete();
         $adminUser->setUserName("admin");
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
@@ -55,9 +57,11 @@ class RbacController extends Controller
         Yii::$app->authManager->assign($admin, $adminUser->getId());
         
         //Заведение пользователя
+        if ($userUser=User::findByUsername("user")){
+            $userUser->delete();
+        }
         $userUser = new User();
-        $userUser->findByUsername("user")->delete();
-        $userUser -> setUserName("user");
+        $userUser->setUserName("user");
         $userUser->setPassword("user");
         $userUser->activateUser();
         $userUser->insert(false);

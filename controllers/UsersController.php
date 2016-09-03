@@ -23,14 +23,11 @@ class UsersController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create', 'delete', 'update', 'view'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'delete', 'update', 'view'],
+                        'actions' => ['?'],
                         'allow' => true,
-                        'roles' => [
-                            User::ROLE_ADMIN
-                        ],
+                        'roles' => [User::ROLE_ADMIN],
                     ],
                 ],
             ],            

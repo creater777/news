@@ -7,11 +7,6 @@ $config = [
     'language' => 'ru-RU',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'modules' => [
-        'rbac' =>  [
-            'class' => 'johnitvn\rbacplus\Module',
-        ]       
-    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -46,7 +41,6 @@ $config = [
         'db' => require(__DIR__ . '/db.php'),
         'authManager' => [
             'class' => 'yii\rbac\DBManager',
-            'defaultRoles' => ['admin', 'moder', 'user'],
         ],
         
         /*'urlManager' => [

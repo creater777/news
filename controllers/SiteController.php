@@ -28,20 +28,25 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['view', 'create', 'update', 'delete'],
                 'rules' => [
                     [
+                        'actions' => ['index', 'login', 'error', 'register'],
+                        'allow' => true,
+                    ],
+                    [
                         'actions' => ['view', 'logout'],
-                        'allow' => ['@'],
+                        'allow' => true,
                         'roles' => [User::PERMISSION_VIEWNEWS],
                     ],
                     [
                         'actions' => ['create', 'update'],
-                        'allow' => Yii::$app->user->can(User::PERMISSION_EDITNEWS),
+                        'allow' => true,
+                        'roles' => [User::PERMISSION_EDITNEWS],
                     ],
                     [
-                        'actions' => ['delete', 'users'],
-                        'allow' => Yii::$app->user->can(User::PERMISSION_USEREDIT),
+                        'actions' => ['?'],
+                        'allow' => true,
+                        'allow' => [User::ROLE_ADMIN],
                     ],
                 ],
             ],
