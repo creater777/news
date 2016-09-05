@@ -403,3 +403,78 @@ I: Connecting to configured address/port: news:9002.
 E: Time-out connecting to client. :-(
 Log closed at 2016-09-03 19:47:27
 
+Log opened at 2016-09-05 06:45:13
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 06:45:13
+
+Log opened at 2016-09-05 11:17:10
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:17:10
+
+Log opened at 2016-09-05 11:24:06
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:24:07
+
+Log opened at 2016-09-05 11:27:01
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:27:01
+
+Log opened at 2016-09-05 11:55:42
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:55:43
+
+Log opened at 2016-09-05 11:55:53
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:55:53
+
+Log opened at 2016-09-05 12:59:24
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 12:59:25
+
+Log opened at 2016-09-05 13:20:33
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 13:20:33
+
+Log opened at 2016-09-05 13:20:59
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 13:20:59
+
+Log opened at 2016-09-05 13:21:35
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 13:21:36
+
+Log opened at 2016-09-05 14:30:07
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 14:30:08
+
+Log opened at 2016-09-05 14:40:10
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 14:40:10
+
+Log opened at 2016-09-05 14:40:10
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 14:40:11
+
+Log opened at 2016-09-05 14:40:28
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 14:40:28
+
+Log opened at 2016-09-05 14:40:57
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 14:40:57
+

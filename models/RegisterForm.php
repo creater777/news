@@ -80,14 +80,15 @@ class RegisterForm extends Model
             $user->username = $this->username;
             $user->email = $this->email;
             $user->password = User::getPasswordHash($this->password);
+            $user->generateAuthKey(90);
             try{
                 $user->insert();
                 Yii::$app->mailer->compose()
-                    ->setTo('admin@example.com')
-                    ->setFrom([$this->email => $this->username])
+                    ->setTo([$this->email => $this->username])
+                    ->setFrom(Yii::$app->params['adminEmail'])
                     ->setSubject('Подтверждение регистрации на сайте')
-                    ->setTextBody('')
-                    ->send();                
+                    ->setTextBody($user->getAuthKey())
+                    ->send();
             } catch (Exception $ex) {
                 $this->addError($ex, "Ошибка при регистрации пользователя");
                 return false;

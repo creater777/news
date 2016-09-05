@@ -8,11 +8,13 @@ use Yii;
  * This is the model class for table "users".
  *
  * @property integer $id
+ * @property date $createat
  * @property string $username
  * @property string $password
  * @property integer $active
  * @property string $email
  * @property string $authKey
+ * @property integer $authExpiredTime
  * @property string $accessToken
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
@@ -42,7 +44,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['username', 'password', 'authKey', 'accessToken'], 'required'],
             [['active'], 'integer'],
             [['username', 'email'], 'string', 'max' => 255],
-            [['password', 'authKey', 'accessToken'], 'string', 'max' => 40],
+            [['password', 'authKey', 'accessToken'], 'string', 'max' => 255],
             [['username'], 'unique'],
         ];
     }
@@ -115,9 +117,24 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     /**
      * @inheritdoc
      */
-    public function validateAuthKey($authKey)
+    public static function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        $user = static::findOne(['authkey' => $authKey]);
+        if (!$user){
+            return false;
+        }
+        return $user->authExpiredTime + $user->createat >= Date();
+    }
+
+    /** 
+     * Generate authKey
+     * 
+     * @return type string
+     */
+    public function generateAuthKey($expiredTime){
+        $this->authKey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
+        $this->authExpiredTime = $expiredTime;
+        return $this->authKey;
     }
 
     /** 
@@ -127,7 +144,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @return type string
      */
     public function getPasswordHash($password){
-        return hash('md5', $password + $this->email, false); 
+        return hash('md5', $password . $this->email, false); 
     }
 
     /**
@@ -148,4 +165,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function activateUser(){
         $this->active = 1;
     }
+
+    public function isActive(){
+        return $this->active === 1;
+    }
+
 }

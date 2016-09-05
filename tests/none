@@ -108,3 +108,33 @@ I: Connecting to configured address/port: news:9002.
 E: Time-out connecting to client. :-(
 Log closed at 2016-09-03 20:28:52
 
+Log opened at 2016-09-05 11:23:26
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:23:26
+
+Log opened at 2016-09-05 11:23:44
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:23:45
+
+Log opened at 2016-09-05 11:28:25
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:28:25
+
+Log opened at 2016-09-05 11:54:49
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:54:50
+
+Log opened at 2016-09-05 11:55:12
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:55:12
+
+Log opened at 2016-09-05 11:55:21
+I: Connecting to configured address/port: localhost:9001.
+E: Time-out connecting to client. :-(
+Log closed at 2016-09-05 11:55:21
+
