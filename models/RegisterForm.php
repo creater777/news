@@ -79,7 +79,7 @@ class RegisterForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->password = User::getPasswordHash($this->password);
+            $user->generatePasswordHash($this->password);
             $user->generateAuthKey(90);
             try{
                 $user->insert();

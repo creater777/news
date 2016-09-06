@@ -117,13 +117,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     /**
      * @inheritdoc
      */
-    public static function validateAuthKey($authKey)
+    public function validateAuthKey($authKey)
     {
-        $user = static::findOne(['authkey' => $authKey]);
-        if (!$user){
-            return false;
-        }
-        return $user->authExpiredTime + $user->createat >= Date();
+        return $this->authKey === $authKey &&
+               $this->authExpiredTime + $this->createat >= Date();
     }
 
     /** 
@@ -143,8 +140,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @param type string $password
      * @return type string
      */
-    public function getPasswordHash($password){
-        return hash('md5', $password . $this->email, false); 
+    public function generatePasswordHash($password){
+        $this->password = hash('md5', $password . $this->email, false);
+        return $this->password;
     }
 
     /**
