@@ -12,7 +12,6 @@ use app\models\News;
 use app\models\NewsSearch;
 use app\models\LoginForm;
 use app\models\RegisterForm;
-use app\models\ContactForm;
 use app\models\User;
 
 /**
@@ -30,7 +29,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'login', 'error', 'register'],
+                        'actions' => ['index', 'login', 'error', 'register', 'confirmemail', 'captcha', 'resendemail'],
                         'allow' => true,
                     ],
                     [
@@ -99,24 +98,44 @@ class SiteController extends Controller
         ]);
     }
     
+    public function actionConfirmemail($authKey){
+        $user = new User();
+        $user->findByAuthKey($authKey);
+        if($user->validateAuthKey($authKey)){
+            $user->activateUser();
+            $user->save();
+            $msg = "Проверка email прошла успешно.";
+        } else{
+            $url = Yii::$app->getUrlManager()->createAbsoluteUrl(['site/resendemail', 'authKey' => $authKey]);
+            $msg = 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>';
+        }
+        return $this -> render('confirmEmail', [
+            'model' => $user,
+            'message' => $msg,
+        ]);
+    }
+    
+    public function actionResendemail($authKey){
+        $user = new User();
+        if ($user->findByAuthKey($authKey)){
+            $user->generateAuthKey(Yii::$app->params['adminEmail']);
+            $user->save();
+            RegisterForm::sendConfirm($user);
+            $msg = "Письмо с инструкцией по активации высланно на " . $user->email;
+        } else{
+            $msg = "Пользователь не найден";
+        }
+        return $this -> render('confirmEmail', [
+            'model' => $user,
+            'message' => $msg,
+        ]);
+    }
+    
     public function actionLogout()
     {
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
     }
 
     public function actionAbout()

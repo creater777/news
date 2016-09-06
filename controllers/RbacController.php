@@ -53,8 +53,11 @@ class RbacController extends Controller
         $adminUser->setUserName("admin");
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
-        $adminUser->insert(false);
-        Yii::$app->authManager->assign($admin, $adminUser->getId());
+        if (!$adminUser->insert(false)){
+            
+            throw new \Exception("Unable to add user admin. " . print_r());
+        }
+        $adminUser->setRole(User::ROLE_ADMIN);
         
         //Заведение пользователя
         if ($userUser=User::findByUsername("user")){
@@ -64,8 +67,9 @@ class RbacController extends Controller
         $userUser->setUserName("user");
         $userUser->setPassword("user");
         $userUser->activateUser();
-        $userUser->insert(false);
-        Yii::$app->authManager->assign($user, $userUser->getId());
-        
+        if (!$userUser->insert(false)){
+            throw new \Exception("Unable to add user user");
+        }
+        $userUser->setRole(User::ROLE_USER);
     }
 }

@@ -10,8 +10,11 @@ class UserTest extends TestCase
     {
         parent::setUp();
         // uncomment the following to load fixtures for user table
-        //$this->loadFixtures(['user']);
+        $this->loadFixtures(['user']);
     }
 
+    public function testAuthKeyGenerate(){
+        
+    }
     // TODO add test methods here
 }

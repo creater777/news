@@ -14,6 +14,8 @@ class RegisterForm extends Model
     public $email;
     public $password;
     public $password2;
+    public $error;
+    public $verifyCode;
 
     private $_user = false;
 
@@ -31,6 +33,7 @@ class RegisterForm extends Model
             ['username', 'validateUser'],
             ['email', 'email'],
             ['email', 'validateEmail'],
+            ['verifyCode', 'captcha'],
         ];
     }
 
@@ -40,6 +43,8 @@ class RegisterForm extends Model
             'username' => 'Имя пользователя',
             'password' => 'Пароль',
             'password2' => 'Подтверждение',
+            'error' => '',
+            'verifyCode' => '',
         ];
     }
     
@@ -77,20 +82,19 @@ class RegisterForm extends Model
 
         if (!$this->getUser()){
             $user = new User();
-            $user->username = $this->username;
-            $user->email = $this->email;
-            $user->generatePasswordHash($this->password);
-            $user->generateAuthKey(90);
+            $user->setUserName($this->username);
+            $user->setEmail($this->email);
+            $user->setPassword($this->password);
+            $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
             try{
-                $user->insert();
-                Yii::$app->mailer->compose()
-                    ->setTo([$this->email => $this->username])
-                    ->setFrom(Yii::$app->params['adminEmail'])
-                    ->setSubject('Подтверждение регистрации на сайте')
-                    ->setTextBody($user->getAuthKey())
-                    ->send();
-            } catch (Exception $ex) {
-                $this->addError($ex, "Ошибка при регистрации пользователя");
+                if (!$user->insert(false)){
+                    $this->addError('error', "Внутренняя ошибка при регистрации пользователя. Обратитесь к администратору.");
+                    return false;
+                }
+                $user->setRole(User::ROLE_USER);
+                $this->sendConfirm($user);
+            } catch (\Exception $ex) {
+                $this->addError($ex, "Ошибка при регистрации пользователя.");
                 return false;
             }
             return true;
@@ -99,6 +103,13 @@ class RegisterForm extends Model
         }
     }
 
+    public static function sendConfirm($user){
+        return Yii::$app->mailer->compose('confirm', ['model' => $user])
+            ->setTo([$user->email => $user->username])
+            ->setFrom(Yii::$app->params['adminEmail'])
+            ->setSubject('Подтверждение регистрации на сайте')
+            ->send();
+    }
     /**
      * Finds user by [[username]]
      *

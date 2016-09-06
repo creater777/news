@@ -8,13 +8,13 @@ use Yii;
  * This is the model class for table "users".
  *
  * @property integer $id
- * @property date $createat
+ * @property integer $createat
  * @property string $username
  * @property string $password
  * @property integer $active
  * @property string $email
- * @property string $authKey
- * @property integer $authExpiredTime
+ * @property string $authkey
+ * @property integer $authkeyexpired
  * @property string $accessToken
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
@@ -41,10 +41,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password', 'authKey', 'accessToken'], 'required'],
+            [['username', 'password', 'authkey', 'accessToken'], 'required'],
             [['active'], 'integer'],
             [['username', 'email'], 'string', 'max' => 255],
-            [['password', 'authKey', 'accessToken'], 'string', 'max' => 255],
+            [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
             [['username'], 'unique'],
         ];
     }
@@ -56,17 +56,23 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return [
             'id' => 'ID',
+            'createat' => 'Дата создания',
             'username' => 'Имя пользователя',
             'password' => 'Пароль',
             'active' => 'Активный',
             'email' => 'Email',
-            'authKey' => 'Код авторизации',
+            'authkey' => 'Код авторизации',
+            'authkeyexpired' => 'Срок действия кода авторизации',
             'accessToken' => 'Access Token',
         ];
     }
 
     public function setUserName($userName) {
         $this -> username = $userName;
+    }
+
+    public function setEmail($email) {
+        $this -> email = $email;
     }
 
     /**
@@ -98,7 +104,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['access_token' => $token]);
+        return static::findOne(['accesstoken' => $token]);
+    }
+
+    public static function findByAuthKey($key)
+    {
+        return static::findOne(['authkey' => $key]);
     }
 
     public function getId()
@@ -111,7 +122,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->authkey;
     }
 
     /**
@@ -119,19 +130,22 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey &&
-               $this->authExpiredTime + $this->createat >= Date();
+        return $this->authkey === $authKey &&
+               $this->authkeyexpired + $this->createat >= time();
     }
 
+    public function setAuthKey($authKey){
+        $this->authkey = $authKey;
+    }
     /** 
      * Generate authKey
      * 
      * @return type string
      */
     public function generateAuthKey($expiredTime){
-        $this->authKey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
-        $this->authExpiredTime = $expiredTime;
-        return $this->authKey;
+        $this->authkey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
+        $this->authkeyexpired = $expiredTime;
+        return $this->authkey;
     }
 
     /** 
@@ -140,9 +154,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @param type string $password
      * @return type string
      */
-    public function generatePasswordHash($password){
-        $this->password = hash('md5', $password . $this->email, false);
-        return $this->password;
+    private function generatePasswordHash($password){
+        return hash('md5', $password . $this->email, false);
     }
 
     /**
@@ -153,11 +166,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $this->getPasswordHash($password);
+        return $this->password === $this->generatePasswordHash($password);
     }
     
     public function setPassword($password){
-        $this->password = $this->getPasswordHash($password);
+        $this->password = $this->generatePasswordHash($password);
     }
     
     public function activateUser(){
@@ -168,4 +181,18 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->active === 1;
     }
 
+    public function beforeSave($insert) {
+        if (!parent::beforeSave($insert)){
+            return false;
+        };
+        if ($insert){
+            $this->createat = time();
+        }
+        return true;
+    }
+    
+    public function setRole($role){
+        $roleObject = Yii::$app->authManager->getRole($role);
+        Yii::$app->authManager->assign($roleObject, $this->getId());
+    }
 }
