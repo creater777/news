@@ -4,6 +4,7 @@ namespace app\controllers;
 use Yii;
 use yii\console\Controller;
 use app\models\User;
+use app\controllers\UserRule;
  
 class RbacController extends Controller
 {
@@ -16,6 +17,13 @@ class RbacController extends Controller
         $viewNews = $auth->createPermission(User::PERMISSION_VIEWNEWS);
         $viewNews->description = 'Просмотр новостей';
         $auth->add($viewNews);
+        
+        //Права редактировать профиль
+        $userRule = new UserRule();
+        $auth->add($userRule);
+        $editProfile = $auth->createPermission(User::PERMISSION_EDITPROFILE);
+        $editProfile->description = 'Редактирование профиля';
+        $auth->add($editProfile);
 
         //Права редактора
         $editNews = $auth->createPermission(User::PERMISSION_EDITNEWS);
@@ -31,6 +39,7 @@ class RbacController extends Controller
         $user = $auth->createRole(User::ROLE_USER);
         $user->description = 'Пользователь';
         $auth->add($user);
+        $auth->addChild($user,$editProfile);
         $auth->addChild($user,$viewNews);
         
         $moder = $auth->createRole(User::ROLE_MODERATOR);
@@ -54,7 +63,6 @@ class RbacController extends Controller
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
         if (!$adminUser->insert(false)){
-            
             throw new \Exception("Unable to add user admin. " . print_r());
         }
         $adminUser->setRole(User::ROLE_ADMIN);

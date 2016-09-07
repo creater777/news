@@ -99,12 +99,16 @@ class SiteController extends Controller
     }
     
     public function actionConfirmemail($authKey){
-        $user = new User();
-        $user->findByAuthKey($authKey);
+        $user = User::findByAuthKey($authKey);
+        if (!isset($user)){
+            return $this -> render('confirmEmail', [
+                'message' => "Пользователь не найден",
+            ]);
+        }
         if($user->validateAuthKey($authKey)){
             $user->activateUser();
-            $user->save();
-            $msg = "Проверка email прошла успешно.";
+            $user->update(false);
+            $msg = "Проверка email прошла успешно.".$user->username;
         } else{
             $url = Yii::$app->getUrlManager()->createAbsoluteUrl(['site/resendemail', 'authKey' => $authKey]);
             $msg = 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>';
@@ -116,17 +120,16 @@ class SiteController extends Controller
     }
     
     public function actionResendemail($authKey){
-        $user = new User();
-        if ($user->findByAuthKey($authKey)){
-            $user->generateAuthKey(Yii::$app->params['adminEmail']);
-            $user->save();
+        $user = User::findByAuthKey($authKey);
+        if ($user){
+            $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
+            $user->update(false);
             RegisterForm::sendConfirm($user);
             $msg = "Письмо с инструкцией по активации высланно на " . $user->email;
         } else{
             $msg = "Пользователь не найден";
         }
         return $this -> render('confirmEmail', [
-            'model' => $user,
             'message' => $msg,
         ]);
     }

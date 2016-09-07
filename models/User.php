@@ -24,6 +24,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const ROLE_ADMIN = "admin";
     
     const PERMISSION_VIEWNEWS = "viewNews";
+    const PERMISSION_EDITPROFILE = "editProfile";
     const PERMISSION_EDITNEWS = "editNews";
     const PERMISSION_USEREDIT = "userEdit";
 
@@ -144,6 +145,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function generateAuthKey($expiredTime){
         $this->authkey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
+        $this->createat = time();
         $this->authkeyexpired = $expiredTime;
         return $this->authkey;
     }

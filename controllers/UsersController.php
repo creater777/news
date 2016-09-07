@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -25,7 +26,12 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['?'],
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => [User::PERMISSION_EDITPROFILE],
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'update', 'delete'],
                         'allow' => true,
                         'roles' => [User::ROLE_ADMIN],
                     ],
@@ -94,6 +100,9 @@ class UsersController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        if (!\Yii::$app->user->can('isMyProfile', ['users' => $model])) {
+            throw new ForbiddenHttpException('Access denied');
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
