@@ -40,14 +40,7 @@ AppAsset::register($this);
         Yii::$app->user->isGuest ? (
             ['label' => 'Вход', 'url' => ['/site/login']]
         ) : (
-            '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link']
-            )
-            . Html::endForm()
-            . '</li>'
+            ['label' => 'Выход (' . Yii::$app->user->identity->username . ')', 'url' => ['/site/logout']]
         ),
     );
     if (Yii::$app->user->isGuest){

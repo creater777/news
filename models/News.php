@@ -28,7 +28,7 @@ class News extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date'], 'safe'],
+            ['dateInner', 'date', 'format' => 'php:d.m.Y'],
             [['post'], 'string'],
             [['subj'], 'string', 'max' => 512],
         ];
@@ -43,7 +43,17 @@ class News extends \yii\db\ActiveRecord
             'id' => 'ID',
             'subj' => 'Заголовок',
             'date' => 'Дата',
+            'dateInner' => 'Дата',
             'post' => 'Содержание',
         ];
     }
+    
+    public function setDateInner($value){
+        return $this->date = $value ? strtotime($value) : null;
+    }
+
+    public function getDateInner(){
+        return $this->date ? date("d.m.Y", $this->date) : '';
+    }
+
 }

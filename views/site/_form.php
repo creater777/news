@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\News */
@@ -14,9 +15,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'subj')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'date')->textInput() ?>
+    <?= $form->field($model, 'dateInner')->widget(MaskedInput::className(), ['mask' => '99.99.9999']) ?>
 
-    <?= $form->field($model, 'post')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'post')->textarea(['rows' => 8]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -52,7 +52,8 @@ class RbacController extends Controller
         $admin = $auth->createRole(User::ROLE_ADMIN);
         $admin->description = 'Администратор';
         $auth->add($admin);
-        $auth->addChild($admin,$moder);
+        $auth->addChild($admin,$viewNews);
+        $auth->addChild($admin,$editNews);
         $auth->addChild($admin,$userEdit);
         
         //Заведение администратора
@@ -80,5 +81,18 @@ class RbacController extends Controller
             throw new \Exception("Unable to add user user");
         }
         $userUser->setRole(User::ROLE_USER);
+ 
+        //Заведение модератора
+        if ($moderUser=User::findByUsername("moder")){
+            $moderUser->delete();
+        }
+        $moderUser = new User();
+        $moderUser->setUserName("moder");
+        $moderUser->setPassword("moder");
+        $moderUser->activateUser();
+        if (!$moderUser->insert(false)){
+            throw new \Exception("Unable to add user moder");
+        }
+        $moderUser->setRole(User::ROLE_MODERATOR);
     }
 }

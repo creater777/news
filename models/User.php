@@ -30,7 +30,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const PERMISSION_EDITNEWS = "editNews";
     const PERMISSION_USEREDIT = "userEdit";
 
-    /**
+   /**
      * @inheritdoc
      */
     public static function tableName()
@@ -44,11 +44,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password', 'authkey', 'accessToken'], 'required'],
+            [['username', 'password'], 'required'],
             [['active'], 'integer'],
             [['username', 'email'], 'string', 'max' => 255],
             [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
+//            ['password', 'compare', 'compareAttribute' => 'password2'],
             [['username'], 'unique'],
+            ['email', 'validateEmail'],
         ];
     }
 
@@ -60,14 +62,26 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             'id' => 'ID',
             'createat' => 'Дата создания',
+            'dateCreateInner' => 'Дата создания',
             'username' => 'Имя пользователя',
             'password' => 'Пароль',
+            'password2' => 'Повторите ввод',
             'active' => 'Активный',
+            'notificationonline' => 'Включить оповещение на сайте',
+            'notificationemail' => 'Оповещать о новых новостях по email',
             'email' => 'Email',
+            'role' => 'Роль пользователя',
             'authkey' => 'Код авторизации',
             'authkeyexpired' => 'Срок действия кода авторизации',
             'accessToken' => 'Access Token',
         ];
+    }
+
+    public function validateEmail($attribute, $params){
+        $user = User::findByEmail($this->email);
+        if ($user && $this->isNewRecord){
+            $this->addError($attribute, 'Нельзя задать такой адрес электронной почты.');
+        }
     }
 
     public function setUserName($userName) {
@@ -188,7 +202,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function beforeSave($insert) {
         if (!parent::beforeSave($insert)){
             return false;
-        };
+        }
         if ($insert){
             $this->createat = time();
         }
@@ -198,5 +212,21 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function setRole($role){
         $roleObject = Yii::$app->authManager->getRole($role);
         Yii::$app->authManager->assign($roleObject, $this->getId());
+    }
+    
+    public function getRole(){
+        $roles = [];
+        foreach (Yii::$app->authManager->getRolesByUser($this->id) as $role){
+            $roles[] = $role->name;
+        }
+        return implode(', ', $roles);
+    }
+    
+    public function setDateCreateInner($value){
+        return $this->createat = $value ? strtotime($value) : null;
+    }
+
+    public function getDateCreateInner(){
+        return $this->createat ? date("d.m.Y", $this->createat) : '';
     }
 }

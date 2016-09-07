@@ -33,9 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?= DetailView::widget([
+        'template' => '<tr><th></th><td>{value}</td></tr>',
         'model' => $model,
         'attributes' => [
-            'date',
+            'dateInner',
             'post:ntext',
         ],
     ]) ?>

@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     <?php 
         $columns = [
-            'date',
+            'dateInner',
             'subj',
         ];
         if (Yii::$app->user->can(User::PERMISSION_VIEWNEWS)){
