@@ -41,9 +41,9 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'subj' => 'Subj',
-            'date' => 'Date',
-            'post' => 'Post',
+            'subj' => 'Заголовок',
+            'date' => 'Дата',
+            'post' => 'Содержание',
         ];
     }
 }

@@ -13,6 +13,8 @@ use Yii;
  * @property string $password
  * @property integer $active
  * @property string $email
+ * @property integer $notificationonline
+ * @property integer $notificationemail
  * @property string $authkey
  * @property integer $authkeyexpired
  * @property string $accessToken

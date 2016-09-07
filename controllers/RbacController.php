@@ -23,6 +23,7 @@ class RbacController extends Controller
         $auth->add($userRule);
         $editProfile = $auth->createPermission(User::PERMISSION_EDITPROFILE);
         $editProfile->description = 'Редактирование профиля';
+        $editProfile->ruleName = $userRule->name;
         $auth->add($editProfile);
 
         //Права редактора

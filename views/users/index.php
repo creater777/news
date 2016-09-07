@@ -25,16 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'active',
             'email:email',
-//            'usergroup.groupname',
-//            [
-//                'header' => 'Группа',
-//                'value' => function($model) {
-//                    return $model->usergroup->groupname;
-//                }
-//            ],            
-            // 'authKey',
-            // 'accessToken',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

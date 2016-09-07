@@ -26,9 +26,8 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['update'],
+                        'actions' => ['update', 'view'],
                         'allow' => true,
-                        'roles' => [User::PERMISSION_EDITPROFILE],
                     ],
                     [
                         'actions' => ['index', 'view', 'update', 'delete'],
@@ -68,8 +67,12 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        if (!\Yii::$app->user->can(User::PERMISSION_EDITPROFILE, ['users' => $model])) {
+            throw new ForbiddenHttpException(Yii::t('yii','You are not allowed to perform this action.'));
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -100,8 +103,8 @@ class UsersController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if (!\Yii::$app->user->can('isMyProfile', ['users' => $model])) {
-            throw new ForbiddenHttpException('Access denied');
+        if (!\Yii::$app->user->can(User::PERMISSION_EDITPROFILE, ['users' => $model])) {
+            throw new ForbiddenHttpException(Yii::t('yii','You are not allowed to perform this action.'));
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

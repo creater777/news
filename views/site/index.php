@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+USE app\models\User;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\NewsSearch */
@@ -13,24 +14,39 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="news-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create News', ['create'], ['class' => 'btn btn-success']) ?>
+    <?php
+        if (Yii::$app->user->can(User::PERMISSION_EDITNEWS)){
+            echo Html::a('Create News', ['create'], ['class' => 'btn btn-success']);
+        }
+    ?>
     </p>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+    <?php 
+        $columns = [
             'date',
             'subj',
-            [
+        ];
+        if (Yii::$app->user->can(User::PERMISSION_VIEWNEWS)){
+            $template = '{view}';
+        }
+        if (Yii::$app->user->can(User::PERMISSION_EDITNEWS)){
+            $template = '{update} {view}';
+        }
+        if (Yii::$app->user->can(User::ROLE_ADMIN)){
+            $template = '{update} {view} {delete}';
+        }
+        if (isset($template)){
+            $columns[] = [
                 'class' => 'yii\grid\ActionColumn',
-                'header'=>'',
                 'headerOptions' => ['width' => '80'],
-                'template' => '{update} {view} {delete}',
-            ],
-        ],
-    ]); ?>
+                'template' => $template,    
+            ];
+        }
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'showHeader' => false,
+            'columns' => $columns,
+        ]); 
+    ?>
 </div>
