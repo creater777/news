@@ -51,8 +51,7 @@ class News extends \yii\db\ActiveRecord
     }
     
     public static function findLatest($time, $limit){
-        //return static::findAll(['updateat < :date', 'params' => [':date' => $time]]);
-        return static::find("updateat > `:time`", [':time' => $time])->orderBy('date')->limit($limit)->all();
+        return static::find()->andWhere('updateat > ' . strval($time))->orderBy('date')->limit($limit)->all();
     }
     
     public function setDateInner($value){
@@ -68,7 +67,7 @@ class News extends \yii\db\ActiveRecord
         if ($insert){
             $this->createat = time();
         }
-        if (!isset($this->date)){
+        if (!isset($this->date) || $this->date ==0){
             $this->date = time();
         }
         $this->updateat = time();
@@ -77,6 +76,17 @@ class News extends \yii\db\ActiveRecord
     
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
+        if (!Yii::$app->user->identity->notificationemail ||
+                empty(Yii::$app->user->identity->email)){
+            return true;
+        }
+        if ($insert){
+            Yii::$app->mailer->compose('newnews', ['model' => $this])
+                ->setTo([Yii::$app->user->identity->email => Yii::$app->user->identity->username])
+                ->setFrom(Yii::$app->params['adminEmail'])
+                ->setSubject('Новая новость')
+                ->send();            
+        }
         return true;
     }
 }

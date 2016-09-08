@@ -20,20 +20,29 @@
             info._url = options.url;
             info._intervalId = setInterval(function(){
                 info.checkNew(info._lastDate);
-            }, info._delay * 20);
+            }, info._delay * 10);
+        },
+        
+        removeItem: function($item){
+            var info = this;
+            setTimeout(function(item){
+                item.remove();
+            }, info._delay, $item);
+            $item.fadeOut(info._delay);        
         },
 
-        display: function(title, text){
+        display: function(title, text, id){
             var info = this;
             info._count++;
             info._lastIndex++;
+            var view = $('div[name=' + id + ']');
+            if (view){
+                info.removeItem(view);
+            }
+            info._render.prepend('<div name="' + id + '" id="info' + info._lastIndex + '" class="infoItem"><div class="infoTitle">' + title + '</div><div class="infoText">' + text + '</div></div>');
             if (info._count >= info._maxCount){
                 var index = info._lastIndex - info._maxCount;
-                setTimeout(function(_index, _lastIndex){
-                    $('#info' + _index).remove();
-                    info._render.prepend('<div id="info' + _lastIndex + '" class="infoItem"><div class="infoTitle">' + title + '</div><div class="infoText">' + text + '</div></div>');
-                }, info._delay, index, info._lastIndex);
-                $('#info' + index).fadeOut(info._delay);
+                info.removeItem($('#info' + index));
                 info._count--;
             }
         },
@@ -48,21 +57,23 @@
         
         checkNew: function(lastTime){
             var info = this;
-            $.post(info._url+'&lasttime=' + lastTime + '&limit=' + info._maxCount, null, null, 'json')
-            .done(function(data){
+            $.post(info._url+'&lasttime=' + lastTime + '&limit=' + info._maxCount, function(data){
                 if (!data.length){
                     return;
                 }
+                if (data === 'stop'){
+                    clearInterval(info._intervalId);
+                    return;
+                }
                 $.each(data, function(key, val){
-                    info.display(new Date(val.date * 1000).toLocaleDateString("ru"), val.subj);
+                    info.display(new Date(val.date * 1000).toLocaleDateString("ru"), val.subj, val.id);
                     if (info.getLastDate() < val.updateat){
                         info.setLastDate(val.updateat);
                     }
                 });
-                    
-            })
+            }, 'json')
             .error(function(data){
-                console.log(data);
+                console.log(data.response);
             });
         }
     }

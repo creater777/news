@@ -11,7 +11,8 @@ body {
 }
 
 .wrap > .container {
-    padding: 70px 15px 20px;
+    padding: 70px 250px 20px 15px;
+    position: fixed;
 }
 
 .footer {
@@ -88,4 +89,23 @@ a.desc:after {
     border-left: 3px solid #eed3d7;
     padding: 10px 20px;
     margin: 0 0 15px 0;
+}
+
+#notifications{
+    width: 290px;
+    float: right;
+    position: static;
+    padding: 70px 10px 10px 0px;
+}
+
+#notifications .infoItem{
+    background: rgba(0,0,0,0.7);
+    color: #fff !important;
+    margin: 4px;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+#notifications .infoTitle{
+    font-weight: bold;
 }

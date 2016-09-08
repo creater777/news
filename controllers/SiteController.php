@@ -4,9 +4,10 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 
 use app\models\News;
 use app\models\NewsSearch;
@@ -214,13 +215,14 @@ class SiteController extends Controller
 
     public function actionLatestnews($lasttime, $limit){
         if (!Yii::$app->user->identity->notificationonline){
-            return;
+            return json_encode('stop');
         }
         $posts = [];
-        foreach (News::findLatest($time, $limit) as $news){
-            $item['subj'] = $news->subj;
-            $item['date'] = $news->date;
+        foreach (News::findLatest($lasttime, $limit) as $news){
+            $item['id'] = $news->id;
             $item['updateat'] = $news->updateat;
+            $item['date'] = $news->date;
+            $item['subj'] = $news->subj;
             $posts[] = $item;
         }
         return json_encode($posts);
