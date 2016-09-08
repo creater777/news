@@ -29,7 +29,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'login', 'error', 'register', 'confirmemail', 'captcha', 'resendemail'],
+                        'actions' => ['index', 'login', 'error', 'register', 'confirmemail', 'captcha', 'resendemail','latestnews'],
                         'allow' => true,
                     ],
                     [
@@ -94,11 +94,8 @@ class SiteController extends Controller
     public function actionConfirmemail($authKey){
         $user = User::findByAuthKey($authKey);
         if (!isset($user)){
-            return $this -> render('confirmEmail', [
-                'message' => "Пользователь не найден",
-            ]);
-        }
-        if($user->validateAuthKey($authKey)){
+            $msg =  "Пользователь не найден";
+        } elseif ($user->validateAuthKey($authKey)){
             $user->activateUser();
             $user->update(false);
             $msg = "Проверка email прошла успешно.".$user->username;
@@ -107,7 +104,6 @@ class SiteController extends Controller
             $msg = 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>';
         }
         return $this -> render('confirmEmail', [
-            'model' => $user,
             'message' => $msg,
         ]);
     }
@@ -216,6 +212,19 @@ class SiteController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionLatestnews($lasttime, $limit){
+        if (!Yii::$app->user->identity->notificationonline){
+            return;
+        }
+        $posts = [];
+        foreach (News::findLatest($time, $limit) as $news){
+            $item['subj'] = $news->subj;
+            $item['date'] = $news->date;
+            $item['updateat'] = $news->updateat;
+            $posts[] = $item;
+        }
+        return json_encode($posts);
+    }
     /**
      * Finds the News model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
