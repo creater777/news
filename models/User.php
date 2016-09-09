@@ -129,6 +129,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return static::findOne(['authkey' => $key]);
     }
 
+    public static function findAllActual() {
+        return static::find()->andWhere('active = 1')->all();
+    }
+    
     public function getId()
     {
         return $this->id;

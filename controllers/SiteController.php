@@ -142,8 +142,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $itemsInPage = News::getNewsInPage();
         $searchModel = new NewsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $itemsInPage);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

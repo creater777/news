@@ -13,11 +13,13 @@
         _delay: 1000,
         _lastDate: ~~(new Date().getTime() / 1000),
         _intervalId: null,
+        onData: null,
 
         init: function(options){
             var info = this;
             info._render = options.renderTo;
             info._url = options.url;
+            info.onData = options.onData;
             info._intervalId = setInterval(function(){
                 info.checkNew(info._lastDate);
             }, info._delay * 10);
@@ -71,6 +73,7 @@
                         info.setLastDate(val.updateat);
                     }
                 });
+                info.onData();
             }, 'json')
             .error(function(data){
                 console.log(data.response);
@@ -82,7 +85,10 @@
 $(document).ready(function(){
     var options = {
         renderTo: $('#notifications'),
-        url: 'http://news/web/index.php?r=site%2Flatestnews'
+        url: 'http://news/web/index.php?r=site%2Flatestnews',
+        onData: function(){
+            $.pjax.reload({container:"#news"});
+        }
     };
     $.info.init(options);
 });

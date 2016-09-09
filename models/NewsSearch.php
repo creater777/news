@@ -39,7 +39,7 @@ class NewsSearch extends News
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $itemsInPage)
     {
         $query = News::find()->orderBy(['date' => SORT_DESC]);
 
@@ -47,6 +47,9 @@ class NewsSearch extends News
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => $itemsInPage,
+            ],
         ]);
 
         $this->load($params);

@@ -74,18 +74,34 @@ class News extends \yii\db\ActiveRecord
         return true;
     }
     
+    public static function getNewsInPage(){
+        //$cookies = Yii::$app->request->cookies;
+        return $_COOKIE['newsInPage'];// $cookies->getValue('newsInPage', 3);
+    }
+    
+    public static function setNewsInPage($value){
+        $cookies = Yii::$app->response->cookies;
+        $cookies->add(new \yii\web\Cookie([
+            'name' => 'newsInPage',
+            'value' => $value,
+        ]));
+    }
+    
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
-        if (!Yii::$app->user->identity->notificationemail ||
-                empty(Yii::$app->user->identity->email)){
-            return true;
-        }
         if ($insert){
-            Yii::$app->mailer->compose('newnews', ['model' => $this])
-                ->setTo([Yii::$app->user->identity->email => Yii::$app->user->identity->username])
-                ->setFrom(Yii::$app->params['adminEmail'])
-                ->setSubject('Новая новость')
-                ->send();            
+            $users = User::findAllActual();
+            foreach($users as $user){
+                if (!$user->notificationemail ||
+                        empty($user->email)){
+                    continue;
+                }
+                Yii::$app->mailer->compose('newnews', ['model' => $this])
+                    ->setTo([$user->email => $user->username])
+                    ->setFrom(Yii::$app->params['adminEmail'])
+                    ->setSubject('Новая новость')
+                    ->send();            
+            }
         }
         return true;
     }
