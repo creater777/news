@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
 
-$this->title = 'Регистрация';
+$this->title = 'Продолжение регистрации';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
@@ -23,9 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+        <?= $form->field($model, 'password')->passwordInput() ?>
 
-        <?= $form->field($model, 'email')->textInput() ?>
+        <?= $form->field($model, 'password2')->passwordInput() ?>
 
         <?= $form->field($model, 'error')->hiddenInput() ?>
 
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
     
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-11">
-                <?= Html::submitButton('Регистрация', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                <?= Html::submitButton('Продолжить', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
             </div>
         </div>
 

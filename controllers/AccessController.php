@@ -8,6 +8,7 @@ use yii\web\Controller;
 
 use app\models\LoginForm;
 use app\models\RegisterForm;
+use app\models\ConfirmForm;
 use app\models\User;
 
 class AccessController extends Controller
@@ -51,7 +52,7 @@ class AccessController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->goHome();
         }
         return $this->render('login', [
             'model' => $model,
@@ -62,7 +63,9 @@ class AccessController extends Controller
     {
         $model = new RegisterForm();
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
-            return $this->goHome();
+            return $this -> render('registermsg', [
+                'message' => "Вам высланы инструкции для продолжения регистрации. Проверьте вашу почту",
+            ]);
         }
         return $this->render('register', [
             'model' => $model,
@@ -72,17 +75,25 @@ class AccessController extends Controller
     public function actionConfirmemail($authKey){
         $user = User::findByAuthKey($authKey);
         if (!isset($user)){
-            $msg =  "Пользователь не найден";
-        } elseif ($user->validateAuthKey($authKey)){
-            $user->activateUser();
-            $user->update(false);
-            $msg = "Проверка email прошла успешно.".$user->username;
-        } else{
-            $url = Yii::$app->getUrlManager()->createAbsoluteUrl(['site/resendemail', 'authKey' => $authKey]);
-            $msg = 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>';
+            throw new NotFoundHttpException("Пользователь не найден");
         }
-        return $this -> render('confirmEmail', [
-            'message' => $msg,
+
+        if (!$user->validateAuthKey($authKey)){
+            $url = Yii::$app->getUrlManager()->createAbsoluteUrl(['site/resendemail', 'authKey' => $authKey]);
+            return $this -> render('registermsg', [
+                'message' => 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>',
+            ]);
+        }
+
+        $model = new ConfirmForm();
+        if ($model->load(Yii::$app->request->post()) && $model->activate($user)) {
+            return $this -> render('registermsg', [
+                'message' => "Регистрация прошла успешно",
+            ]);
+        }
+
+        return $this->render('confirm', [
+            'model' => $model,
         ]);
     }
     
@@ -96,7 +107,7 @@ class AccessController extends Controller
         } else{
             $msg = "Пользователь не найден";
         }
-        return $this -> render('confirmEmail', [
+        return $this -> render('registermsg', [
             'message' => $msg,
         ]);
     }
@@ -106,11 +117,6 @@ class AccessController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 
     /**
