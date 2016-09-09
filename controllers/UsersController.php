@@ -30,7 +30,7 @@ class UsersController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['index', 'delete'],
+                        'actions' => ['index', 'delete', 'create'],
                         'allow' => true,
                         'roles' => [User::ROLE_ADMIN],
                     ],

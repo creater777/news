@@ -75,13 +75,11 @@ class RegisterForm extends Model
         $user = new User();
         $user->setUserName($this->username);
         $user->setEmail($this->email);
-        $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
         try{
             if (!$user->insert(false)){
                 $this->addError('error', "Внутренняя ошибка при регистрации пользователя. Обратитесь к администратору.");
                 return false;
             }
-            $this->sendConfirm($user);
         } catch (\Exception $ex) {
             $this->addError($ex, "Ошибка при регистрации пользователя.");
             return false;
@@ -94,6 +92,23 @@ class RegisterForm extends Model
             ->setTo([$user->email => $user->username])
             ->setFrom(Yii::$app->params['adminEmail'])
             ->setSubject('Подтверждение регистрации на сайте')
+            ->send();
+    }
+    
+    public static function sendNewUser($user){
+        return Yii::$app->mailer->compose('newuser', ['model' => $user])
+            ->setTo([$user->email => $user->username])
+            ->setFrom(Yii::$app->params['adminEmail'])
+            ->setSubject('Зарегистрирован пользователь ' . $user->username)
+            ->send();
+
+    }
+    
+    public static function sendPswChanged($user){
+        return Yii::$app->mailer->compose('pswchanged', ['model' => $user])
+            ->setTo([$user->email => $user->username])
+            ->setFrom(Yii::$app->params['adminEmail'])
+            ->setSubject('Изменен пароль' . $user->username)
             ->send();
     }
 }

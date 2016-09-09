@@ -87,9 +87,8 @@ class AccessController extends Controller
 
         $model = new ConfirmForm();
         if ($model->load(Yii::$app->request->post()) && $model->activate($user)) {
-            return $this -> render('registermsg', [
-                'message' => "Регистрация прошла успешно",
-            ]);
+            Yii::$app->user->login($user);
+            $this->goHome();
         }
 
         return $this->render('confirm', [
@@ -115,7 +114,6 @@ class AccessController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 

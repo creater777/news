@@ -210,7 +210,24 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         if ($insert){
             $this->createat = time();
         }
+        $this->updateat = time();
+        $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
         return true;
+    }
+    
+    public function afterSave($insert, $changedAttributes) {
+        parent::afterSave($insert, $changedAttributes);
+        Yii::warning($changedAttributes);
+        if ($insert){
+            RegisterForm::sendConfirm($this);
+            $admins = Yii::$app->authManager->getUserIdsByRole(User::ROLE_ADMIN);
+            foreach ($admins as $id){
+                RegisterForm::sendNewUser($this->findIdentity($id));
+            }
+        }
+        if(!$insert && isset($changedAttributes['password'])){
+            RegisterForm::sendPswChanged($this);
+        }
     }
     
     public function setRole($role){

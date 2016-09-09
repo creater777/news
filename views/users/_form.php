@@ -26,6 +26,16 @@ use app\models\User;
 
     <?= $form->field($model, 'notificationemail')->checkbox() ?>
 
+    <?php 
+    if (Yii::$app->user->can(User::PERMISSION_USEREDIT)){
+        $roles = [User::ROLE_ADMIN => User::ROLE_ADMIN,
+                  User::ROLE_MODERATOR => User::ROLE_MODERATOR,
+                  User::ROLE_USER => User::ROLE_USER,
+            ];
+        $form->field($model, 'role')->listBox($roles);
+    }
+    ?>
+
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
