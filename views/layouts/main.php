@@ -36,13 +36,13 @@ AppAsset::register($this);
     $items = array(
         ['label' => 'Новости', 'url' => ['/site/index']],
         Yii::$app->user->isGuest ? (
-            ['label' => 'Вход', 'url' => ['/site/login']]
+            ['label' => 'Вход', 'url' => ['/access/login']]
         ) : (
-            ['label' => 'Выход (' . Yii::$app->user->identity->username . ')', 'url' => ['/site/logout']]
+            ['label' => 'Выход (' . Yii::$app->user->identity->username . ')', 'url' => ['/access/logout']]
         ),
     );
     if (Yii::$app->user->isGuest){
-        $items[] = ['label' => 'Регистрация', 'url' => ['/site/register']];
+        $items[] = ['label' => 'Регистрация', 'url' => ['/access/register']];
     }
     if (Yii::$app->user->can(User::ROLE_ADMIN)){
         $items[] = ['label' => 'Пользователи', 'url' => ['/users']];

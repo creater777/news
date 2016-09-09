@@ -4,15 +4,11 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
 
 use app\models\News;
 use app\models\NewsSearch;
-use app\models\LoginForm;
-use app\models\RegisterForm;
 use app\models\User;
 
 /**
@@ -30,7 +26,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'login', 'error', 'register', 'confirmemail', 'captcha', 'resendemail','latestnews'],
+                        'actions' => ['index', 'error', 'latestnews'],
                         'allow' => true,
                     ],
                     [
@@ -64,76 +60,6 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
-    }
-
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    public function actionRegister()
-    {
-        $model = new RegisterForm();
-        if ($model->load(Yii::$app->request->post()) && $model->register()) {
-            return $this->goHome();
-        }
-        return $this->render('register', [
-            'model' => $model,
-        ]);
-    }
-    
-    public function actionConfirmemail($authKey){
-        $user = User::findByAuthKey($authKey);
-        if (!isset($user)){
-            $msg =  "Пользователь не найден";
-        } elseif ($user->validateAuthKey($authKey)){
-            $user->activateUser();
-            $user->update(false);
-            $msg = "Проверка email прошла успешно.".$user->username;
-        } else{
-            $url = Yii::$app->getUrlManager()->createAbsoluteUrl(['site/resendemail', 'authKey' => $authKey]);
-            $msg = 'Время подтверждения истекло. <a href = "'.$url.'" >Выслать повторно</a>';
-        }
-        return $this -> render('confirmEmail', [
-            'message' => $msg,
-        ]);
-    }
-    
-    public function actionResendemail($authKey){
-        $user = User::findByAuthKey($authKey);
-        if ($user){
-            $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
-            $user->update(false);
-            RegisterForm::sendConfirm($user);
-            $msg = "Письмо с инструкцией по активации высланно на " . $user->email;
-        } else{
-            $msg = "Пользователь не найден";
-        }
-        return $this -> render('confirmEmail', [
-            'message' => $msg,
-        ]);
-    }
-    
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 
     /**
