@@ -5,6 +5,9 @@ use Yii;
 use yii\rbac\Rule;
 use app\models\User;
  
+/**
+ * Правило запрещающее редактирование чужего профиля
+ */
 class UserRule extends Rule
 {
     public $name = 'isMyProfile';

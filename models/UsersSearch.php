@@ -8,13 +8,10 @@ use yii\data\ActiveDataProvider;
 use app\models\User;
 
 /**
- * UsersSearch represents the model behind the search form about `app\models\Users`.
+ * UsersSearch - модель для формирования запроса поиска
  */
-class UsersSearch extends User
+class UsersSearch extends UserForm
 {
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -23,9 +20,6 @@ class UsersSearch extends User
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
@@ -33,17 +27,13 @@ class UsersSearch extends User
     }
 
     /**
-     * Creates data provider instance with search query applied
-     *
+     * Формирование запроса поиска
      * @param array $params
-     *
      * @return ActiveDataProvider
      */
     public function search($params)
     {
         $query = User::find();
-
-        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,12 +42,9 @@ class UsersSearch extends User
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'active' => $this->active,

@@ -6,7 +6,8 @@ use Yii;
 use yii\base\Model;
 
 /**
- * LoginForm is the model behind the login form.
+ * Форма подтверждения регистрации
+ * содержит поле ввода пароля
  */
 class ConfirmForm extends Model
 {
@@ -40,6 +41,8 @@ class ConfirmForm extends Model
     }
     
     /**
+     * Подтверждение регистрации,
+     * запись пароля и активация пользователя
      * @return boolean whether the user is registered successfully
      */
     public function activate($user)

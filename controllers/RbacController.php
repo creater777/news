@@ -6,6 +6,15 @@ use yii\console\Controller;
 use app\models\User;
 use app\controllers\UserRule;
  
+/**
+ * Инициализация доступов
+ * Изначально создается пользователи:
+ * - admin с паролем admin с правами администратора
+ * - moder с паролем moder с правами модератора
+ * - user с паролем user с правами пользователя
+ * запускается из консоли php yii rbac/init
+ * @throws \Exception
+ */
 class RbacController extends Controller
 {
     public function actionInit()
@@ -61,7 +70,7 @@ class RbacController extends Controller
             $adminUser->delete();
         }
         $adminUser = new User();
-        $adminUser->setUserName("admin");
+        $adminUser->username = "admin";
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
         if (!$adminUser->insert(false)){
@@ -74,7 +83,7 @@ class RbacController extends Controller
             $userUser->delete();
         }
         $userUser = new User();
-        $userUser->setUserName("user");
+        $userUser->username="user";
         $userUser->setPassword("user");
         $userUser->activateUser();
         if (!$userUser->insert(false)){
@@ -87,7 +96,7 @@ class RbacController extends Controller
             $moderUser->delete();
         }
         $moderUser = new User();
-        $moderUser->setUserName("moder");
+        $moderUser->username = "moder";
         $moderUser->setPassword("moder");
         $moderUser->activateUser();
         if (!$moderUser->insert(false)){

@@ -11,6 +11,9 @@ use app\models\RegisterForm;
 use app\models\ConfirmForm;
 use app\models\User;
 
+/**
+ * Контроллер, реализующий механизмы регистрации и авторизации
+ */
 class AccessController extends Controller
 {
     /**
@@ -44,6 +47,10 @@ class AccessController extends Controller
         ];
     }
 
+    /**
+     * Действие авторизации
+     * @return рендерит форму логина
+     */
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -59,6 +66,10 @@ class AccessController extends Controller
         ]);
     }
 
+    /**
+     * Действие регистрации
+     * @return рендерит форму регистрации
+     */
     public function actionRegister()
     {
         $model = new RegisterForm();
@@ -72,6 +83,12 @@ class AccessController extends Controller
         ]);
     }
     
+    /**
+     * Действие подттверждение авторизации по email
+     * @param type $authKey - ключ авторизации пользователя
+     * @return type рендерит форму ввода пароля пользователя
+     * @throws NotFoundHttpException
+     */
     public function actionConfirmemail($authKey){
         $user = User::findByAuthKey($authKey);
         if (!isset($user)){
@@ -96,6 +113,11 @@ class AccessController extends Controller
         ]);
     }
     
+    /**
+     * Действие на переотправку пароля
+     * @param type $authKey - ключ авторизации который был присвоен пользователю
+     * @return type
+     */
     public function actionResendemail($authKey){
         $user = User::findByAuthKey($authKey);
         if ($user){
@@ -111,6 +133,10 @@ class AccessController extends Controller
         ]);
     }
     
+    /**
+     * Выхот из системы
+     * @return type
+     */
     public function actionLogout()
     {
         Yii::$app->user->logout();
@@ -118,7 +144,8 @@ class AccessController extends Controller
     }
 
     /**
-     * Lists all News models.
+     * Страницы индекса нет, переходим на главную
+     * как вариант можно NotFoundHttpException поставить
      * @return mixed
      */
     public function actionIndex()

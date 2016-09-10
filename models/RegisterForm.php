@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * LoginForm is the model behind the login form.
+ * Форма регистрации
  */
 class RegisterForm extends Model
 {
@@ -36,16 +36,16 @@ class RegisterForm extends Model
         return [
             'username' => 'Имя пользователя',
             'error' => '',
-            'verifyCode' => '',
+            'verifyCode' => 'Введите код с картинки',
         ];
     }
     
     /**
-     * Validates.
-     * This method serves as the inline validation for username.
-     *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * Проверка поля "имя пользователя",
+     * поиск в базе и запрет ввода существующего.
+     * Выводит сообщение радом с полем в случае неправильного ввода
+     * @param string $attribute - поле
+     * @param array $params
      */
     public function validateUser($attribute, $params)
     {
@@ -57,6 +57,13 @@ class RegisterForm extends Model
         }
     }
 
+    /**
+     * Проверка поля "email",
+     * поиск в базе и запрет ввода существующего.
+     * Выводит сообщение радом с полем в случае неправильного ввода
+     * @param type $attribute
+     * @param type $params
+     */
     public function validateEmail($attribute, $params){
         $user = User::findByEmail($this->email);
         if ($user){
@@ -64,7 +71,8 @@ class RegisterForm extends Model
         }
     }
     /**
-     * @return boolean whether the user is registered successfully
+     * Создание новой записи в таблице пользователей
+     * @return boolean - true в случае успеха
      */
     public function register()
     {
@@ -87,6 +95,11 @@ class RegisterForm extends Model
         return true;
     }
 
+    /**
+     * Формирование и отправка письма с ссылкой подтвержения регистрации
+     * @param type $user - объект User
+     * @return type
+     */
     public static function sendConfirm($user){
         return Yii::$app->mailer->compose('confirm', ['model' => $user])
             ->setTo([$user->email => $user->username])
@@ -95,6 +108,11 @@ class RegisterForm extends Model
             ->send();
     }
     
+    /**
+     * Формирование и отправка письма с оповещением о регистрации нового пользователя
+     * @param type $user - объект User
+     * @return type
+     */
     public static function sendNewUser($user){
         return Yii::$app->mailer->compose('newuser', ['model' => $user])
             ->setTo([$user->email => $user->username])
@@ -104,6 +122,11 @@ class RegisterForm extends Model
 
     }
     
+    /**
+     * Формирование и отправка письма с оповещением о смене пароля
+     * @param type $user - объект User
+     * @return type
+     */
     public static function sendPswChanged($user){
         return Yii::$app->mailer->compose('pswchanged', ['model' => $user])
             ->setTo([$user->email => $user->username])

@@ -12,7 +12,8 @@ use app\models\NewsSearch;
 use app\models\User;
 
 /**
- * SiteController implements the CRUD actions for News model.
+ * SiteController контроллер главной страницы, реализует действия над новостями
+ * с контролем доступа
  */
 class SiteController extends Controller
 {
@@ -63,8 +64,8 @@ class SiteController extends Controller
     }
 
     /**
-     * Lists all News models.
-     * @return mixed
+     * Начальная страница
+     * @return генерируется список новостей
      */
     public function actionIndex()
     {
@@ -79,9 +80,9 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays a single News model.
-     * @param integer $id
-     * @return mixed
+     * Просмотр новости
+     * @param integer $id - идентификатор новости
+     * @return генерируется просмотр
      */
     public function actionView($id)
     {
@@ -91,9 +92,8 @@ class SiteController extends Controller
     }
 
     /**
-     * Creates a new News model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * Создание новости
+     * @return генерируется форма
      */
     public function actionCreate()
     {
@@ -109,10 +109,9 @@ class SiteController extends Controller
     }
 
     /**
-     * Updates an existing News model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
+     * Обновление новости
+     * @param integer $id - идентификатор
+     * @return генерируется форма
      */
     public function actionUpdate($id)
     {
@@ -128,9 +127,8 @@ class SiteController extends Controller
     }
 
     /**
-     * Deletes an existing News model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * Удаление новости
+     * @param integer $id - идентификатор
      * @return mixed
      */
     public function actionDelete($id)
@@ -140,6 +138,13 @@ class SiteController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * Получение списка последних новостей
+     * используется jquery плагином для отображения на боковой панели
+     * @param type $lasttime - время с которого необходимо получить
+     * @param type $limit - максимальное значение
+     * @return type - json объект со списком новостей
+     */
     public function actionLatestnews($lasttime, $limit){
         if (!Yii::$app->user->identity->notificationonline){
             return json_encode('stop');
@@ -155,11 +160,10 @@ class SiteController extends Controller
         return json_encode($posts);
     }
     /**
-     * Finds the News model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return News the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * Поиск новости по id
+     * @param integer $id - идентификатор
+     * @return объект News
+     * @throws NotFoundHttpException если не найдено
      */
     protected function findModel($id)
     {

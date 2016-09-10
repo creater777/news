@@ -15,12 +15,9 @@ use app\models\User;
 
     <?= $model->isNewRecord ? $form->field($model, 'username'):'' ?>
     
-    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
 
-    <?php
-    if (Yii::$app->user->can(User::PERMISSION_USEREDIT))
-        echo $form->field($model, 'active')->checkbox();
-    ?>
+    <?= $form->field($model, 'password2')->passwordInput() ?>
 
     <?= $form->field($model, 'notificationonline')->checkbox() ?>
 
@@ -28,11 +25,13 @@ use app\models\User;
 
     <?php 
     if (Yii::$app->user->can(User::PERMISSION_USEREDIT)){
-        $roles = [User::ROLE_ADMIN => User::ROLE_ADMIN,
-                  User::ROLE_MODERATOR => User::ROLE_MODERATOR,
-                  User::ROLE_USER => User::ROLE_USER,
+        echo $form->field($model, 'active')->checkbox();
+        
+        $roles = [User::ROLE_ADMIN => 'Администратор',
+                  User::ROLE_MODERATOR => 'Модератор',
+                  User::ROLE_USER => 'Пользователь',
             ];
-        $form->field($model, 'role')->listBox($roles);
+        echo $form->field($model, 'role')->listBox($roles);
     }
     ?>
 

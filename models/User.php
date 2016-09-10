@@ -5,33 +5,41 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "users".
+ * User - модель пользоватея, реализует методы доступа и модель поведения.
  *
- * @property integer $id
- * @property integer $createat
- * @property string $username
- * @property string $password
- * @property integer $active
- * @property string $email
- * @property integer $notificationonline
- * @property integer $notificationemail
- * @property string $authkey
- * @property integer $authkeyexpired
+ * @property integer $id - идентификатор
+ * @property integer $createat - дата создания
+ * @property integer $updateat - дата обновления
+ * @property string $username  - имя пользователя
+ * @property string $password - хеш пароля
+ * @property integer $active - признак активности
+ * @property string $email - email
+ * @property integer $notificationonline - признак оповещения online
+ * @property integer $notificationemail - признак оповещения по email
+ * @property string $authkey - код авторизации
+ * @property integer $authkeyexpired - срок действия кода авторизации
  * @property string $accessToken
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    /**
+     * Роли пользователей
+     */
     const ROLE_USER = "user";
     const ROLE_MODERATOR = "moder";
     const ROLE_ADMIN = "admin";
     
+    /**
+     * Ограничения в правах
+     */
     const PERMISSION_VIEWNEWS = "viewNews";
     const PERMISSION_EDITPROFILE = "editProfile";
     const PERMISSION_EDITNEWS = "editNews";
     const PERMISSION_USEREDIT = "userEdit";
 
-   /**
-     * @inheritdoc
+    /**
+     * Таблица в БД
+     * @return string
      */
     public static function tableName()
     {
@@ -39,64 +47,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['username', 'password'], 'required'],
-            [['active'], 'integer'],
-            [['username', 'email'], 'string', 'max' => 255],
-            [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
-//            ['password', 'compare', 'compareAttribute' => 'password2'],
-            [['username'], 'unique'],
-            ['email', 'validateEmail'],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'createat' => 'Дата создания',
-            'dateCreateInner' => 'Дата создания',
-            'username' => 'Имя пользователя',
-            'password' => 'Пароль',
-            'password2' => 'Повторите ввод',
-            'active' => 'Активный',
-            'notificationonline' => 'Включить оповещение на сайте',
-            'notificationemail' => 'Оповещать о новых новостях по email',
-            'email' => 'Email',
-            'role' => 'Роль пользователя',
-            'authkey' => 'Код авторизации',
-            'authkeyexpired' => 'Срок действия кода авторизации',
-            'accessToken' => 'Access Token',
-        ];
-    }
-
-    public function validateEmail($attribute, $params){
-        $user = User::findByEmail($this->email);
-        if ($user && $this->isNewRecord){
-            $this->addError($attribute, 'Нельзя задать такой адрес электронной почты.');
-        }
-    }
-
-    public function setUserName($userName) {
-        $this -> username = $userName;
-    }
-
-    public function setEmail($email) {
-        $this -> email = $email;
-    }
-
-    /**
-     * Finds user by username
-     *
+     * Поиск по имени пользователя
      * @param  string      $username
-     * @return static|null
+     * @return static|null объект User
      */
     public static function findByUsername($username)
     {
@@ -104,42 +57,65 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * Finds user by email
-     *
+     * Поиск по email
      * @param  string      $email
-     * @return static|null
+     * @return static|null объект User
      */
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email]);
     }
 
+    /**
+     * Поиск по id
+     * @param  string      $id
+     * @return static|null объект User
+     */
     public static function findIdentity($id)
     {
         return static::findOne($id);
     }
 
+    /**
+     * Поиск по AccessToken
+     * @param  string      $token
+     * @return static|null объект User
+     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::findOne(['accesstoken' => $token]);
     }
 
+    /**
+     * Поиск по коду авторизации
+     * @param  string      $key
+     * @return static|null объект User
+     */
     public static function findByAuthKey($key)
     {
         return static::findOne(['authkey' => $key]);
     }
 
+    /**
+     * Поиск всех активных
+     * @return array User
+     */
     public static function findAllActual() {
         return static::find()->andWhere('active = 1')->all();
     }
     
+    /**
+     * Получение идентификатора
+     * @return type int
+     */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * @inheritdoc
+     * Получение кода авторизации
+     * @return type string
      */
     public function getAuthKey()
     {
@@ -147,7 +123,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Проверка кода авторизации
+     * @return type boolean - true если верен
      */
     public function validateAuthKey($authKey)
     {
@@ -155,54 +132,93 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
                $this->authkeyexpired + $this->createat >= time();
     }
 
-    public function setAuthKey($authKey){
-        $this->authkey = $authKey;
-    }
-    /** 
-     * Generate authKey
-     * 
-     * @return type string
+    /**
+     * Генерация кода авторизации
+     * @return type boolean - true если верен
      */
     public function generateAuthKey($expiredTime){
         $this->authkey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
-        $this->createat = time();
+        $this->updateat = time();
         $this->authkeyexpired = $expiredTime;
         return $this->authkey;
     }
 
-    /** 
-     * Generate password hash
-     * 
-     * @param type string $password
-     * @return type string
+    /**
+     * Генерация хеша пароля
+     * @param type $password
+     * @return type
      */
     private function generatePasswordHash($password){
         return hash('md5', $password . $this->email, false);
     }
-
+    
     /**
-     * Validates password
-     *
-     * @param  string  $password password to validate
-     * @return boolean if password provided is valid for current user
+     * Проверка пароля
+     * @param  string  $password
+     * @return boolean - true если верен
      */
     public function validatePassword($password)
     {
         return $this->password === $this->generatePasswordHash($password);
     }
     
+    /**
+     * Установка пароля с генерацией хеша
+     * @param type $password
+     */
     public function setPassword($password){
         $this->password = $this->generatePasswordHash($password);
     }
     
+    /**
+     * Активация пользователя
+     */
     public function activateUser(){
         $this->active = 1;
     }
 
+    /**
+     * Проверка на активность
+     * @return type - true если активен
+     */
     public function isActive(){
         return $this->active === 1;
     }
 
+     /**
+     * Геттеры и сеттеры виртуального поля роли пользователя.
+     * Присваивает пользователю соответствующую роль
+     * @param type $role
+     */
+    public function setRole($role){
+        Yii::warning('setRole:'. $role . ' - ' . implode(', ', $this->getRole()));
+
+        if (!Yii::$app->user->can($this->PERMISSION_USEREDIT)){
+            return;
+        }
+        $roleObject = Yii::$app->authManager->getRole($role);
+        Yii::$app->authManager->assign($roleObject, $this->getId());
+    }
+    
+    /**
+     * Возвращает список ролей пользователя
+     * @return type
+     */
+    public function getRole(){
+        $roles = [];
+        foreach (Yii::$app->authManager->getRolesByUser($this->getId()) as $role){
+            $roles[] = $role->name;
+        }
+        Yii::warning('getRole:'. implode(', ', $roles));
+        return $roles;
+    }
+    
+   /**
+     * Перед сохранением пользователя устанавливаем дату создания и обновления
+     * генерируем новый код активации
+     * @param type $insert
+     * @return boolean
+     */
     public function beforeSave($insert) {
         if (!parent::beforeSave($insert)){
             return false;
@@ -211,13 +227,24 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $this->createat = time();
         }
         $this->updateat = time();
-        $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
+        if (!$this->isActive()){
+            $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
+        }
         return true;
     }
     
+    /**
+     * После сохранения рассылаем администраторам оповещение по email при создании.
+     * Отправляем пользователю оповещение при смене пароля
+     * @param type $insert
+     * @param type $changedAttributes
+     */
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
-        Yii::warning($changedAttributes);
+        Yii::warning($this);
+        if (Yii::$app->id == 'basic-console'){
+            return true;
+        }
         if ($insert){
             RegisterForm::sendConfirm($this);
             $admins = Yii::$app->authManager->getUserIdsByRole(User::ROLE_ADMIN);
@@ -228,26 +255,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         if(!$insert && isset($changedAttributes['password'])){
             RegisterForm::sendPswChanged($this);
         }
-    }
-    
-    public function setRole($role){
-        $roleObject = Yii::$app->authManager->getRole($role);
-        Yii::$app->authManager->assign($roleObject, $this->getId());
-    }
-    
-    public function getRole(){
-        $roles = [];
-        foreach (Yii::$app->authManager->getRolesByUser($this->id) as $role){
-            $roles[] = $role->name;
-        }
-        return implode(', ', $roles);
-    }
-    
-    public function setDateCreateInner($value){
-        return $this->createat = $value ? strtotime($value) : null;
-    }
-
-    public function getDateCreateInner(){
-        return $this->createat ? date("d.m.Y", $this->createat) : '';
+        return true;
     }
 }

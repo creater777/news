@@ -41,7 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Оповещать о новых новостях по email',
                 'value' => $model->notificationemail ? 'Да':'Нет',
             ],
-            'role',
+            [
+                'label' => 'Роль',
+                'value' => implode(', ', $model->role),
+            ],
             'email:email',
         ],
     ]) ?>

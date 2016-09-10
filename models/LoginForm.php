@@ -6,13 +6,14 @@ use Yii;
 use yii\base\Model;
 
 /**
- * LoginForm is the model behind the login form.
+ * Форма авторизации
  */
 class LoginForm extends Model
 {
     public $username;
     public $password;
     public $rememberMe = true;
+    public $verifyCode;
 
     private $_user = false;
 
@@ -23,12 +24,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
             [['username', 'password'], 'required'],
-            // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            ['verifyCode', 'captcha',  'captchaAction' => 'access/captcha'],
         ];
     }
 
@@ -39,16 +38,14 @@ class LoginForm extends Model
             'password' => 'Пароль',
             'rememberMe' => 'Запомнить',
             'error' => '',
-            'verifyCode' => '',
+            'verifyCode' => 'Введите код с картинки',
         ];
     }
     
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
-     *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * Проверка поля пароля
+     * @param string $attribute - проверяемое поле
+     * @param array $params - дополнительные параметры, не используеться
      */
     public function validatePassword($attribute, $params)
     {
@@ -62,8 +59,8 @@ class LoginForm extends Model
     }
 
     /**
-     * Logs in a user using the provided username and password.
-     * @return boolean whether the user is logged in successfully
+     * Вход в систему
+     * @return boolean - true в случае успешного входа
      */
     public function login()
     {
@@ -74,9 +71,8 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
+     * Поиск пользователя 
+     * @return User|null - объект User
      */
     public function getUser()
     {

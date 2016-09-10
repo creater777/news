@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\User;
+use app\models\UserForm;
 use app\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -12,7 +13,7 @@ use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 
 /**
- * UsersController implements the CRUD actions for Users model.
+ * UsersController контроллер, реализующий действия над пользователями
  */
 class UsersController extends Controller
 {
@@ -46,7 +47,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Lists all Users models.
+     * Отображение списка пользователей
      * @return mixed
      */
     public function actionIndex()
@@ -61,7 +62,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Displays a single Users model.
+     * Просмотр параметров пользователя
      * @param integer $id
      * @return mixed
      */
@@ -78,14 +79,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Creates a new Users model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * Форма для создания пользователя
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new User();
-
+        $model = new UserForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -96,9 +95,9 @@ class UsersController extends Controller
     }
 
     /**
-     * Updates an existing Users model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * Форма редактирования пользователей
+     * Для не администраторов доступно только для своего профиля
+     * @param integer $id - идентификатор
      * @return mixed
      */
     public function actionUpdate($id)
@@ -119,28 +118,25 @@ class UsersController extends Controller
     }
 
     /**
-     * Deletes an existing Users model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * Удаление пользователя
+     * @param integer $id - идентификатор
      * @return mixed
      */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Users model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
+     * Поиск пользователя
      * @param integer $id
-     * @return Users the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return Объект User
+     * @throws NotFoundHttpException если не найден
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        if (($model = UserForm::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
