@@ -146,7 +146,7 @@ class SiteController extends Controller
      * @return type - json объект со списком новостей
      */
     public function actionLatestnews($lasttime, $limit){
-        if (!Yii::$app->user->identity->notificationonline){
+        if (Yii::$app->user->isGuest || !Yii::$app->user->identity->notificationonline){
             return json_encode('stop');
         }
         $posts = [];

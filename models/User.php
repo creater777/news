@@ -138,7 +138,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function generateAuthKey($expiredTime){
         $this->authkey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
-        $this->updateat = time();
         $this->authkeyexpired = $expiredTime;
         return $this->authkey;
     }
@@ -238,13 +237,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $this->createat = time();
         }
         $this->updateat = time();
-        if (Yii::$app->id == 'basic-console'){
-            return true;
-        }
-        $this->setPassword($this->password);
-        if (!$this->isActive()){
-            $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
-        }
         return true;
     }
     

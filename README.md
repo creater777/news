@@ -25,12 +25,24 @@
    ```
    git clone https://github.com/creater777/news
    ```
+
 2. Инициализация приложения
    ```
    php E:\OpenServer\modules\php\PHP-5.4\composer.phar install
    ```
 
 3. Инициализация БД
+   - Создать базу данных и прописать подключение в @app/config/db/php
+   ```
+   return [
+       'class' => 'yii\db\Connection',
+       'dsn' => 'mysql:host=localhost;dbname=newsdb',
+       'username' => 'root',
+       'password' => '',
+       'charset' => 'utf8',
+   ];
+   ```
+   - Запустить миграцию
    ```
    php yii migrate/up
    ```
@@ -44,6 +56,10 @@
    ```
    php yii rbac/init
    ```
+После инициализации создадуться 3 пользователя:
+- user с правами пользователя и паролем user
+- moder с правами модератора и паролем moder
+- admin с правами администратора и паролем admin
 
 PS
 --

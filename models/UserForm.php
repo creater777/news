@@ -11,6 +11,8 @@ use app\models\User;
  */
 class UserForm extends User
 {
+    private $passwordInner = '';
+    
     public function rules()
     {
         return [
@@ -48,21 +50,21 @@ class UserForm extends User
      * На форме пароль не отображаем
      */
     public function getPasswordVisual2(){
-        return '';
+        return $this->passwordInner;
     }
     
     /**
      * На форме пароль не отображаем
      */
     public function getPasswordVisual(){
-        return '';
+        return $this->passwordInner;
     }
 
     /**
      * Установка пароля
      */
     public function setPasswordVisual($password){
-        $this->setPassword($password);
+        $this->passwordInner = $password;
     }
 
     /**
@@ -87,9 +89,23 @@ class UserForm extends User
 
     /**
      * Виртуальное поле для отображения даты создания
-     * @param type $value
      */
     public function getDateCreateInner(){
         return $this->createat ? date("d.m.Y", $this->createat) : '';
+    }
+    
+    /**
+     * Перед сохранением, генерация нового хеша пароля и кода активации
+     * @param type $insert
+     */
+    public function beforeSave($insert) {
+        if (!parent::beforeSave($insert)){
+            return false;
+        }
+        $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
+        if (!empty($this->passwordInner)){
+            $this->setPassword($this->passwordInner);
+        }
+        return true;
     }
 }

@@ -21,9 +21,7 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            // required fields
             [['username', 'email'], 'required'],
-            // password is validated by compareAttribute()
             ['username', 'validateUser'],
             ['email', 'email'],
             ['email', 'validateEmail'],
