@@ -46,15 +46,11 @@ class UsersSearch extends UserForm
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'active' => $this->active,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'password', $this->password])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'authKey', $this->authKey])
-            ->andFilterWhere(['like', 'accessToken', $this->accessToken]);
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }

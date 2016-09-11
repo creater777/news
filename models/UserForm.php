@@ -18,7 +18,7 @@ class UserForm extends User
             [['active'], 'integer'],
             [['username', 'email'], 'string', 'max' => 255],
             [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
-            ['password', 'compare', 'compareAttribute' => 'password2'],
+            ['passwordVisual', 'compare', 'compareAttribute' => 'passwordVisual2'],
             [['username'], 'unique'],
             ['email', 'validateEmail'],
         ];
@@ -31,8 +31,8 @@ class UserForm extends User
             'createat' => 'Дата создания',
             'dateCreateInner' => 'Дата создания',
             'username' => 'Имя пользователя',
-            'password' => 'Пароль',
-            'password2' => 'Повторите ввод',
+            'passwordVisual' => 'Пароль',
+            'passwordVisual2' => 'Повторите ввод',
             'active' => 'Активный',
             'notificationonline' => 'Включить оповещение на сайте',
             'notificationemail' => 'Оповещать о новых новостях по email',
@@ -45,12 +45,26 @@ class UserForm extends User
     }
 
     /**
-     * Значение поля подтверждения пароля равно текущему паролю
+     * На форме пароль не отображаем
      */
-    public function getPassword2(){
-        return $this->password;
+    public function getPasswordVisual2(){
+        return '';
     }
     
+    /**
+     * На форме пароль не отображаем
+     */
+    public function getPasswordVisual(){
+        return '';
+    }
+
+    /**
+     * Установка пароля
+     */
+    public function setPasswordVisual($password){
+        $this->setPassword($password);
+    }
+
     /**
      * Проверка поля email
      * @param type $attribute

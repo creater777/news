@@ -28,6 +28,17 @@ $config = [
         ],
     ],
     'params' => $params,
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@app/migrations/db'
+        ],
+        'migrate-test' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'db' => 'newsdb_test',
+            'migrationPath' => '@app/migrations/test'
+        ],
+    ],    
 ];
 
 return $config;

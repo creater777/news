@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\User;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UsersSearch */
@@ -16,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?= GridView::widget([
+    <?php
+    echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -28,11 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
                      return $data->isActive() ? 'Да' : 'Нет';
                 }
             ],
+            'role' =>
             [
                 'label' => 'Роль',
                 'format' => 'text',
                 'value' => function($data){
-                     return implode(', ', $data->role);
+                     return $data->getRoleList()[$data->getRole()];
                 }
             ],
             'email:email',

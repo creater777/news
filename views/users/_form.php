@@ -15,10 +15,6 @@ use app\models\User;
 
     <?= $model->isNewRecord ? $form->field($model, 'username'):'' ?>
     
-    <?= $form->field($model, 'password')->passwordInput() ?>
-
-    <?= $form->field($model, 'password2')->passwordInput() ?>
-
     <?= $form->field($model, 'notificationonline')->checkbox() ?>
 
     <?= $form->field($model, 'notificationemail')->checkbox() ?>
@@ -26,12 +22,7 @@ use app\models\User;
     <?php 
     if (Yii::$app->user->can(User::PERMISSION_USEREDIT)){
         echo $form->field($model, 'active')->checkbox();
-        
-        $roles = [User::ROLE_ADMIN => 'Администратор',
-                  User::ROLE_MODERATOR => 'Модератор',
-                  User::ROLE_USER => 'Пользователь',
-            ];
-        echo $form->field($model, 'role')->listBox($roles);
+        echo $form->field($model, 'role')->listBox(User::getRoleList());
     }
     ?>
 
@@ -39,6 +30,18 @@ use app\models\User;
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+
+    <?php $form = ActiveForm::begin(); ?>
+
+    <?= $form->field($model, 'passwordVisual')->passwordInput() ?>
+
+    <?= $form->field($model, 'passwordVisual2')->passwordInput() ?>
+
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? 'Задать пароль' : 'Сменить пароль', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

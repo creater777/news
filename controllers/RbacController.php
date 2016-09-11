@@ -31,7 +31,7 @@ class RbacController extends Controller
         $userRule = new UserRule();
         $auth->add($userRule);
         $editProfile = $auth->createPermission(User::PERMISSION_EDITPROFILE);
-        $editProfile->description = 'Редактирование профиля';
+        $editProfile->description = 'Запрет на редактирование чужего профиля';
         $editProfile->ruleName = $userRule->name;
         $auth->add($editProfile);
 
@@ -42,24 +42,24 @@ class RbacController extends Controller
 
         //Права админа
         $userEdit = $auth->createPermission(User::PERMISSION_USEREDIT);
-        $userEdit->description = 'Админ панель';
+        $userEdit->description = 'Редактирование чужих профилей';
         $auth->add($userEdit);
 
         //Добавляем роли
         $user = $auth->createRole(User::ROLE_USER);
-        $user->description = 'Пользователь';
+        $user->description = User::getRoleList()[User::ROLE_USER];
         $auth->add($user);
         $auth->addChild($user,$editProfile);
         $auth->addChild($user,$viewNews);
         
         $moder = $auth->createRole(User::ROLE_MODERATOR);
-        $moder->description = 'Модератор';
+        $moder->description = User::getRoleList()[User::ROLE_MODERATOR];;
         $auth->add($moder);
         $auth->addChild($moder,$user);
         $auth->addChild($moder,$editNews);
 
         $admin = $auth->createRole(User::ROLE_ADMIN);
-        $admin->description = 'Администратор';
+        $admin->description = User::getRoleList()[User::ROLE_ADMIN];;
         $auth->add($admin);
         $auth->addChild($admin,$viewNews);
         $auth->addChild($admin,$editNews);
@@ -74,7 +74,7 @@ class RbacController extends Controller
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
         if (!$adminUser->insert(false)){
-            throw new \Exception("Unable to add user admin. " . print_r());
+            throw new \Exception("Unable to add user admin");
         }
         $adminUser->setRole(User::ROLE_ADMIN);
         

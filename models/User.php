@@ -185,15 +185,26 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->active === 1;
     }
 
+    /**
+     * Получение списка ролей
+     * @return array
+     */
+    public static function getRoleList(){
+        return [
+            static::ROLE_USER => 'Пользователь',
+            static::ROLE_MODERATOR => 'Модератор',
+            static::ROLE_ADMIN => 'Администратор',
+        ];
+    }
      /**
      * Геттеры и сеттеры виртуального поля роли пользователя.
      * Присваивает пользователю соответствующую роль
      * @param type $role
      */
     public function setRole($role){
-        Yii::warning('setRole:'. $role . ' - ' . implode(', ', $this->getRole()));
+//        Yii::warning('setRole:'. $role . ' - ' . $this->getRole());
 
-        if (!Yii::$app->user->can($this->PERMISSION_USEREDIT)){
+        if (Yii::$app->id != 'basic-console' && !Yii::$app->user->can($this->PERMISSION_USEREDIT)){
             return;
         }
         $roleObject = Yii::$app->authManager->getRole($role);
@@ -210,7 +221,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $roles[] = $role->name;
         }
         Yii::warning('getRole:'. implode(', ', $roles));
-        return $roles;
+        return $roles[0];
     }
     
    /**
@@ -227,6 +238,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             $this->createat = time();
         }
         $this->updateat = time();
+        if (Yii::$app->id == 'basic-console'){
+            return true;
+        }
+        $this->setPassword($this->password);
         if (!$this->isActive()){
             $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
         }
@@ -241,7 +256,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
-        Yii::warning($this);
+//        Yii::warning($this);
         if (Yii::$app->id == 'basic-console'){
             return true;
         }
