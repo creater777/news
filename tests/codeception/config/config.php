@@ -3,6 +3,7 @@
  * Application configuration shared by all test types
  */
 return [
+    'id' => 'basic-test',
     'language' => 'en-US',
     'controllerMap' => [
         'fixture' => [
@@ -13,10 +14,19 @@ return [
         ],
     ],
     'components' => [
-        'db' => [
-            'dsn' => 'mysql:host=localhost;dbname=yii2_basic_tests',
-    ],
+        'user' => [
+            'identityClass' => 'app\models\User',
+            'loginUrl' => ['access/login'],
+        ],
+        'errorHandler' => [
+            'errorAction' => 'site/error',
+        ],
+        'db' => require(__DIR__ . '/../../../config/dbtest.php'),
+        'authManager' => [
+            'class' => 'yii\rbac\DBManager',
+        ],
         'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
         ],
         'urlManager' => [

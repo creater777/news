@@ -1,9 +1,8 @@
-<?php
-
+    <?php
+use yii\console\controllers\MigrateController;
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests/codeception');
 
 $params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
 
 $config = [
     'id' => 'basic-console',
@@ -22,7 +21,8 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => require(__DIR__ . '/db.php'),
+        'dbtest' => require(__DIR__ . '/dbtest.php'),
         'authManager' => [
             'class' => 'yii\rbac\DBManager',
         ],
@@ -35,8 +35,12 @@ $config = [
         ],
         'migrate-test' => [
             'class' => 'yii\console\controllers\MigrateController',
-            'db' => 'newsdb_test',
+            'db' => 'dbtest',
             'migrationPath' => '@app/migrations/test'
+        ],
+        'rbac-test' => [
+            'class' => 'yii\rbac\DBManager',
+            'db' => 'dbtest',
         ],
     ],    
 ];

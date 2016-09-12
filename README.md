@@ -32,7 +32,7 @@
    ```
 
 3. Инициализация БД
-   - Создать базу данных и прописать подключение в @app/config/db/php
+   - Создать базу данных и прописать подключение в @app/config/db.php
    ```
    return [
        'class' => 'yii\db\Connection',
@@ -57,10 +57,40 @@
    php yii rbac/init
    ```
 После инициализации создадуться 3 пользователя:
-- user с правами пользователя и паролем user
-- moder с правами модератора и паролем moder
-- admin с правами администратора и паролем admin
+  - user с правами пользователя и паролем user
+  - moder с правами модератора и паролем moder
+  - admin с правами администратора и паролем admin
 
+6. Тестирование
+  - Создать базу данных для тесто и прописать подключение в @app/tests/codeception.yml
+   ```
+    modules:
+        config:
+            Db:
+                dsn: 'mysql:host=localhost;dbname=newsdb_test'
+                user: 'root'
+                password: ''
+   ```
+   в @app/tests/codeception/config/config.php
+   ```
+    'components' => [
+        'db' => [
+            'dsn' => 'mysql:host=localhost;dbname=newsdb_test',
+    ],
+   ```
+   и в @app/config/dbtest.php
+   ```
+   return [
+       'class' => 'yii\db\Connection',
+       'dsn' => 'mysql:host=localhost;dbname=newsdb_test',
+       'username' => 'root',
+       'password' => '',
+       'charset' => 'utf8',
+   ];
+  - Запустить миграцию
+   ```
+   php yii migrate-test/up
+   ```
 PS
 --
 Разработка велась с параллельным изучением фреймворка, т.к. раньше с ним работать не приходилось. Приблизительно затраченно времени около полноценной рабочей недели с переработками ~60 часов.

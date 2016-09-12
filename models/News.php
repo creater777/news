@@ -85,7 +85,7 @@ class News extends \yii\db\ActiveRecord
      */
     public static function getNewsInPage(){
         //$cookies = Yii::$app->request->cookies;
-        return $_COOKIE['newsInPage'];// $cookies->getValue('newsInPage', 3);
+        return isset($_COOKIE['newsInPage']) ? $_COOKIE['newsInPage'] : null;// $cookies->getValue('newsInPage', 3);
     }
     
     /**
