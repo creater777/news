@@ -42,6 +42,7 @@
        'charset' => 'utf8',
    ];
    ```
+
    - Запустить миграцию
    ```
    php yii migrate/up
@@ -87,6 +88,7 @@
        'password' => '',
        'charset' => 'utf8',
    ];
+   ```
   - Запустить миграцию
    ```
    php yii migrate-test/up
