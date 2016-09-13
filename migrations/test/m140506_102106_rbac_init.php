@@ -134,7 +134,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'FOREIGN KEY (child) REFERENCES ' . 'auth_item' . ' (name)'.
                 ' ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
-        $this->batchInsert('{{%auth_item_child}}', ["parent", "child"],
+        $this->batchInsert('auth_item_child', ["parent", "child"],
         [
             [
                 'parent' => 'admin',
@@ -173,7 +173,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'PRIMARY KEY (item_name, user_id)',
             'FOREIGN KEY (item_name) REFERENCES ' . 'auth_item' . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
-        $this->batchInsert('{{%auth_assignment}}', ["item_name", "user_id", "created_at"],
+        $this->batchInsert('auth_assignment', ["item_name", "user_id", "created_at"],
         [
             [
                 'item_name' => 'admin',
@@ -190,54 +190,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 'user_id' => '2',
                 'created_at' => '1473687818',
             ],
-        ]);        
-        
-        $this->batchInsert('users', ["id", "createat", "updateat", "username", "password", "active", "email", "notificationonline", "notificationemail", "authkey", "authkeyexpired", "accessToken"],
-        [
-            [
-                'id' => '4',
-                'createat' => '1473690389',
-                'updateat' => '1473690389',
-                'username' => 'admin',
-                'password' => '21232f297a57a5a743894a0e4a801fc3',
-                'active' => '1',
-                'email' => null,
-                'notificationonline' => '0',
-                'notificationemail' => '0',
-                'authkey' => '',
-                'authkeyexpired' => '0',
-                'accessToken' => '',
-            ],
-            [
-                'id' => '5',
-                'createat' => '1473690389',
-                'updateat' => '1473690389',
-                'username' => 'user',
-                'password' => 'ee11cbb19052e40b07aac0ca060c23ee',
-                'active' => '1',
-                'email' => null,
-                'notificationonline' => '0',
-                'notificationemail' => '0',
-                'authkey' => '',
-                'authkeyexpired' => '0',
-                'accessToken' => '',
-            ],
-            [
-                'id' => '6',
-                'createat' => '1473690389',
-                'updateat' => '1473690389',
-                'username' => 'moder',
-                'password' => '9ab97e0958c6c98c44319b8d06b29c94',
-                'active' => '1',
-                'email' => null,
-                'notificationonline' => '0',
-                'notificationemail' => '0',
-                'authkey' => '',
-                'authkeyexpired' => '0',
-                'accessToken' => '',
-            ],
-        ]
-        );        
+        ]);      
     }
 
     /**

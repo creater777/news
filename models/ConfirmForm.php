@@ -54,13 +54,14 @@ class ConfirmForm extends Model
         $user->setPassword($this->password);
         $user->activateUser();
         try{
-            if (!$user->save(false)){
+            if (!$user->update(false)){
                 $this->addError('error', "Внутренняя ошибка при регистрации пользователя. Обратитесь к администратору.");
                 return false;
             }
             $user->setRole(User::ROLE_USER);
         } catch (\Exception $ex) {
-            $this->addError($ex, "Ошибка при регистрации пользователя.");
+            Yii::error($ex->getMessage() . $ex->getTraceAsString());
+            $this->addError('error', "Ошибка при регистрации пользователя.");
             return false;
         }
         return true;

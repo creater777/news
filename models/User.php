@@ -38,6 +38,18 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const PERMISSION_USEREDIT = "userEdit";
 
     /**
+     * Получение списка ролей
+     * @return array
+     */
+    public static function getRoleList(){
+        return [
+            self::ROLE_USER => 'Пользователь',
+            self::ROLE_MODERATOR => 'Модератор',
+            self::ROLE_ADMIN => 'Администратор',
+        ];
+    }
+
+    /**
      * Таблица в БД
      * @return string
      */
@@ -184,28 +196,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->active === 1;
     }
 
-    /**
-     * Получение списка ролей
-     * @return array
-     */
-    public static function getRoleList(){
-        return [
-            static::ROLE_USER => 'Пользователь',
-            static::ROLE_MODERATOR => 'Модератор',
-            static::ROLE_ADMIN => 'Администратор',
-        ];
-    }
      /**
      * Геттеры и сеттеры виртуального поля роли пользователя.
      * Присваивает пользователю соответствующую роль
      * @param type $role
      */
     public function setRole($role){
-//        Yii::warning('setRole:'. $role . ' - ' . $this->getRole());
-
-        if (Yii::$app->id != 'basic-console' && !Yii::$app->user->can($this->PERMISSION_USEREDIT)){
-            return;
-        }
         $roleObject = Yii::$app->authManager->getRole($role);
         Yii::$app->authManager->assign($roleObject, $this->getId());
     }
@@ -219,7 +215,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         foreach (Yii::$app->authManager->getRolesByUser($this->getId()) as $role){
             $roles[] = $role->name;
         }
-        Yii::warning('getRole:'. implode(', ', $roles));
         return $roles[0];
     }
     
@@ -248,13 +243,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
-//        Yii::warning($this);
         if (Yii::$app->id == 'basic-console'){
             return true;
         }
         if ($insert){
             RegisterForm::sendConfirm($this);
-            $admins = Yii::$app->authManager->getUserIdsByRole(User::ROLE_ADMIN);
+            $admins = Yii::$app->authManager->getUserIdsByRole(self::ROLE_ADMIN);
             foreach ($admins as $id){
                 RegisterForm::sendNewUser($this->findIdentity($id));
             }

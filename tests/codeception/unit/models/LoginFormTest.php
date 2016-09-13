@@ -22,8 +22,9 @@ class LoginFormTest extends TestCase
         $model = new LoginForm([
             'username' => 'not_existing_username',
             'password' => 'not_existing_password',
+            'verifyCode' => 'testme',
         ]);
-
+        Yii::$app->user->logout();
         $this->specify('user should not be able to login, when there is no identity', function () use ($model) {
             expect('model should not login user', $model->login())->false();
             expect('user should not be logged in', Yii::$app->user->isGuest)->true();
@@ -33,8 +34,9 @@ class LoginFormTest extends TestCase
     public function testLoginWrongPassword()
     {
         $model = new LoginForm([
-            'username' => 'demo',
+            'username' => 'user',
             'password' => 'wrong_password',
+            'verifyCode' => 'testme',
         ]);
 
         $this->specify('user should not be able to login with wrong password', function () use ($model) {
@@ -49,6 +51,7 @@ class LoginFormTest extends TestCase
         $model = new LoginForm([
             'username' => 'user',
             'password' => 'user',
+            'verifyCode' => 'testme',
         ]);
 
         $this->specify('user should be able to login with correct credentials', function () use ($model) {

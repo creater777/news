@@ -71,6 +71,7 @@ class RbacController extends Controller
         }
         $adminUser = new User();
         $adminUser->username = "admin";
+        $adminUser->email = "admin@news.ru";
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
         if (!$adminUser->insert(false)){
@@ -84,6 +85,7 @@ class RbacController extends Controller
         }
         $userUser = new User();
         $userUser->username="user";
+        $userUser->email = "user@news.ru";
         $userUser->setPassword("user");
         $userUser->activateUser();
         if (!$userUser->insert(false)){
@@ -97,6 +99,7 @@ class RbacController extends Controller
         }
         $moderUser = new User();
         $moderUser->username = "moder";
+        $moderUser->email = "moder@news.ru";
         $moderUser->setPassword("moder");
         $moderUser->activateUser();
         if (!$moderUser->insert(false)){

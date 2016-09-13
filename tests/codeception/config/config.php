@@ -14,23 +14,6 @@ return [
         ],
     ],
     'components' => [
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'loginUrl' => ['access/login'],
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
         'db' => require(__DIR__ . '/../../../config/dbtest.php'),
-        'authManager' => [
-            'class' => 'yii\rbac\DBManager',
-        ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
-        ],
-        'urlManager' => [
-            'showScriptName' => true,
-        ],
     ],
 ];

@@ -17,8 +17,8 @@ class UserForm extends User
     {
         return [
             [['username', 'password', 'email'], 'required'],
-            [['active'], 'integer'],
-            [['username', 'email'], 'string', 'max' => 255],
+            [['active', 'notificationonline', 'notificationemail'], 'integer'],
+            [['username', 'email', 'role'], 'string', 'max' => 255],
             [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
             ['passwordVisual', 'compare', 'compareAttribute' => 'passwordVisual2'],
             [['username'], 'unique'],
@@ -92,6 +92,18 @@ class UserForm extends User
      */
     public function getDateCreateInner(){
         return $this->createat ? date("d.m.Y", $this->createat) : '';
+    }
+
+    /**
+     * На визуальной форме изменять роль пользователя может только администратор
+     * @param type $role - роль пользователя
+     * @return type
+     */
+    public function setRole($role) {
+        if (!Yii::$app->user->can(self::PERMISSION_USEREDIT)){
+            return;
+        }        
+        parent::setRole($role);
     }
     
     /**

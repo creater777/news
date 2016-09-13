@@ -7,7 +7,7 @@ use yii\helpers\Console;
 use \yii\base\Event;
 use app\models\News;
 
-class m160911_092300_newsModelInsert extends Migration
+class m160911_092300_data extends Migration
 {
     
     public function __construct($config = array()) {
@@ -210,6 +210,52 @@ class m160911_092300_newsModelInsert extends Migration
         «Важно понимать, что то, что мы находимся в симуляции, несет не метафорический, а буквальный смысл, что мы сами и весь этот мир вокруг нас, который мы видим, слышим и чувствуем, существует внутри компьютера, построенного некоей развитой цивилизацией», — сказал философ.
 
         В 2003 году Бостром опубликовал в журнале The Philosophical Quarterly исследование «А не живем ли мы в "Матрице"?».',
+        ]);
+        
+        $this->batchInsert('users', ["id", "createat", "updateat", "username", "password", "active", "email", "notificationonline", "notificationemail", "authkey", "authkeyexpired", "accessToken"],
+        [
+            [
+                'id' => '4',
+                'createat' => '1473690389',
+                'updateat' => '1473690389',
+                'username' => 'admin',
+                'password' => '4ff54f00d3e2b7626fdcff532a812a5f',
+                'active' => '1',
+                'email' => 'admin@news.ru',
+                'notificationonline' => '0',
+                'notificationemail' => '0',
+                'authkey' => '',
+                'authkeyexpired' => '0',
+                'accessToken' => '',
+            ],
+            [
+                'id' => '5',
+                'createat' => '1473690389',
+                'updateat' => '1473690389',
+                'username' => 'user',
+                'password' => '3e6d837140987c645830e76c65afc3c6',
+                'active' => '1',
+                'email' => 'user@news.ru',
+                'notificationonline' => '0',
+                'notificationemail' => '0',
+                'authkey' => '',
+                'authkeyexpired' => '0',
+                'accessToken' => '',
+            ],
+            [
+                'id' => '6',
+                'createat' => '1473690389',
+                'updateat' => '1473690389',
+                'username' => 'moder',
+                'password' => 'f5646d0e6b5459f15bc20ecf9d81bf5c',
+                'active' => '1',
+                'email' => 'moder@news.ru',
+                'notificationonline' => '0',
+                'notificationemail' => '0',
+                'authkey' => '',
+                'authkeyexpired' => '0',
+                'accessToken' => '',
+            ],
         ]);
     }
 

@@ -79,8 +79,9 @@ class RegisterForm extends Model
         }
 
         $user = new User();
-        $user->setUserName($this->username);
-        $user->setEmail($this->email);
+        $user->username = $this->username;
+        $user->email = $this->email;
+        $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
         try{
             if (!$user->insert(false)){
                 $this->addError('error', "Внутренняя ошибка при регистрации пользователя. Обратитесь к администратору.");
