@@ -141,7 +141,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authkey === $authKey &&
-               $this->authkeyexpired + $this->createat >= time();
+               $this->authkeyexpired + $this->updateat >= time();
     }
 
     /**
@@ -203,6 +203,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function setRole($role){
         $roleObject = Yii::$app->authManager->getRole($role);
+        Yii::$app->authManager->revokeAll($this->getId());
         Yii::$app->authManager->assign($roleObject, $this->getId());
     }
     
@@ -212,7 +213,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getRole(){
         $roles = [];
-        foreach (Yii::$app->authManager->getRolesByUser($this->getId()) as $role){
+        $appRoles = Yii::$app->authManager->getRolesByUser($this->getId());
+        if (!is_array($appRoles) || empty($appRoles)){
+            return null;
+        }
+        foreach ($appRoles as $role){
             $roles[] = $role->name;
         }
         return $roles[0];
@@ -257,5 +262,13 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             RegisterForm::sendPswChanged($this);
         }
         return true;
+    }
+    
+    /**
+     * После удаления пользователя, удаляем из модели доступа
+     */
+    public function afterDelete() {
+        parent::afterDelete();
+        Yii::$app->authManager->revokeAll($this->getId());
     }
 }

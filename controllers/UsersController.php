@@ -27,7 +27,7 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['update', 'view'],
+                        'actions' => ['update', 'view', 'error'],
                         'allow' => true,
                     ],
                     [
@@ -46,6 +46,15 @@ class UsersController extends Controller
         ];
     }
 
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+    
     /**
      * Отображение списка пользователей
      * @return mixed

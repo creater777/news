@@ -88,7 +88,8 @@ class RegisterForm extends Model
                 return false;
             }
         } catch (\Exception $ex) {
-            $this->addError($ex, "Ошибка при регистрации пользователя.");
+            Yii::error("Ошибка при регистрации пользователя." . $ex->getMessage());
+            $this->addError('error', "Ошибка при регистрации пользователя.");
             return false;
         }
         return true;

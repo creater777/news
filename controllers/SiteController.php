@@ -36,14 +36,9 @@ class SiteController extends Controller
                         'roles' => [User::PERMISSION_VIEWNEWS],
                     ],
                     [
-                        'actions' => ['create', 'update'],
+                        'actions' => ['create', 'update', 'delete'],
                         'allow' => true,
                         'roles' => [User::PERMISSION_EDITNEWS],
-                    ],
-                    [
-                        'actions' => ['?'],
-                        'allow' => true,
-                        'allow' => [User::ROLE_ADMIN],
                     ],
                 ],
             ],

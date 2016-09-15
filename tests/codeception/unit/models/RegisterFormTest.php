@@ -54,16 +54,16 @@ class RegisterFormTest extends TestCase
         });
     }
 
-//    public function testRegisterOk()
-//    {
-//        $model = new RegisterForm([
-//            'username' => 'user_test',
-//            'email' => 'user_test@news.ru',
-//            'verifyCode' => 'testme',
-//        ]);
-//
-//        $this->specify('user should be able to register', function () use ($model) {
-//            expect('model should register user', $model->register())->true();
-//        });
-//    }    
+    public function testRegisterOk()
+    {
+        $model = new RegisterForm([
+            'username' => 'user_test',
+            'email' => 'user_test@news.ru',
+            'verifyCode' => 'testme',
+        ]);
+
+        $this->specify('user should be able to register', function () use ($model) {
+            expect('model should register user', $model->register())->true();
+        });
+    }
 }

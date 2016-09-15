@@ -15,5 +15,9 @@ return [
     ],
     'components' => [
         'db' => require(__DIR__ . '/../../../config/dbtest.php'),
+        'urlManager' => [
+            'enablePrettyUrl' => false,
+        ],
     ],
+    'params' => require(__DIR__ . '/../../../config/params.php'),
 ];

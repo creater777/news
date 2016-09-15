@@ -1,18 +1,6 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-use yii\base\InvalidConfigException;
-use yii\rbac\DbManager;
-
-/**
  * Initializes RBAC tables
- *
- * @author Alexander Kochetov <creocoder@gmail.com>
- * @since 2.0
  */
 class m140506_102106_rbac_init extends \yii\db\Migration
 {
@@ -182,12 +170,12 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             ],
             [
                 'item_name' => 'moder',
-                'user_id' => '3',
+                'user_id' => '2',
                 'created_at' => '1473687818',
             ],
             [
                 'item_name' => 'user',
-                'user_id' => '2',
+                'user_id' => '3',
                 'created_at' => '1473687818',
             ],
         ]);      

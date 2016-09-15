@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 use app\models\LoginForm;
 use app\models\RegisterForm;
@@ -120,16 +121,14 @@ class AccessController extends Controller
      */
     public function actionResendemail($authKey){
         $user = User::findByAuthKey($authKey);
-        if ($user){
-            $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
-            $user->update(false);
-            RegisterForm::sendConfirm($user);
-            $msg = "Письмо с инструкцией по активации высланно на " . $user->email;
-        } else{
-            $msg = "Пользователь не найден";
+        if (!isset($user)){
+            throw new NotFoundHttpException("Пользователь не найден");
         }
+        $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
+        $user->update(false);
+        RegisterForm::sendConfirm($user);
         return $this -> render('registermsg', [
-            'message' => $msg,
+            'message' => "Письмо с инструкцией по активации высланно на " . $user->email,
         ]);
     }
     
@@ -150,6 +149,6 @@ class AccessController extends Controller
      */
     public function actionIndex()
     {
-        return $this->goHome();
+        return $this->redirect(['access/login']);
     }
 }
