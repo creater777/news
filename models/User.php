@@ -141,7 +141,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authkey === $authKey &&
-               $this->authkeyexpired + $this->updateat >= time();
+               ($this->authkeyexpired + $this->updateat) >= time();
     }
 
     /**
@@ -149,7 +149,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @return type boolean - true если верен
      */
     public function generateAuthKey($expiredTime){
-        $this->authkey = hash('md5', $this->username . $this->email . (time() + $expiredTime), false);
+        $this->authkey = hash('md5', $this->username . $this->email, false);
         $this->authkeyexpired = $expiredTime;
         return $this->authkey;
     }

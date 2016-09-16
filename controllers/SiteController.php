@@ -27,7 +27,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'error', 'latestnews'],
+                        'actions' => ['index', 'error', 'latestnews', 'setnewsinpage'],
                         'allow' => true,
                     ],
                     [
@@ -154,6 +154,15 @@ class SiteController extends Controller
         }
         return json_encode($posts);
     }
+    
+    /**
+     * 
+     */
+    public function actionSetnewsinpage($newsinpage){
+        News::setNewsInPage($newsinpage);
+        return '';
+    }
+    
     /**
      * Поиск новости по id
      * @param integer $id - идентификатор

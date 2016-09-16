@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use app\models\User;
 
 /**
  * Форма подтверждения регистрации
@@ -47,7 +48,7 @@ class ConfirmForm extends Model
      */
     public function activate($user)
     {
-        if (!$this->validate()){
+        if (!$this->validate() || !isset($user) || !($user instanceof app\models\User)){
             return false;
         }
 

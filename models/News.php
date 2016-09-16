@@ -84,8 +84,7 @@ class News extends \yii\db\ActiveRecord
      * @return type int - значение newsInPage из куков
      */
     public static function getNewsInPage(){
-        //$cookies = Yii::$app->request->cookies;
-        return isset($_COOKIE['newsInPage']) ? $_COOKIE['newsInPage'] : null;// $cookies->getValue('newsInPage', 3);
+        return filter_input(INPUT_COOKIE, 'newsInPage');
     }
     
     /**
@@ -99,7 +98,7 @@ class News extends \yii\db\ActiveRecord
             'value' => $value,
         ]));
     }
-    
+
     /**
      * Действие перед сохранение новости
      * при добавление устанавливается значение createat,
