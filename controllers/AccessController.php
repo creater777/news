@@ -9,7 +9,7 @@ use yii\web\NotFoundHttpException;
 
 use app\models\LoginForm;
 use app\models\RegisterForm;
-use app\models\ConfirmForm;
+use app\models\PasswordForm;
 use app\models\User;
 
 /**
@@ -103,7 +103,7 @@ class AccessController extends Controller
             ]);
         }
 
-        $model = new ConfirmForm();
+        $model = new PasswordForm();
         if ($model->load(Yii::$app->request->post()) && $model->activate($user)) {
             Yii::$app->user->login($user);
             $this->goHome();

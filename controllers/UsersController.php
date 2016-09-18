@@ -6,6 +6,7 @@ use Yii;
 use app\models\User;
 use app\models\UserForm;
 use app\models\UsersSearch;
+use app\models\PasswordForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
@@ -27,7 +28,7 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['update', 'view', 'error'],
+                        'actions' => ['update', 'view', 'error', 'pswchange'],
                         'allow' => true,
                     ],
                     [
@@ -83,7 +84,8 @@ class UsersController extends Controller
             throw new ForbiddenHttpException(Yii::t('yii','You are not allowed to perform this action.'));
         }
         return $this->render('view', [
-            'model' => $model,
+            'model' => new UserForm($model),
+            'passForm' => new PasswordForm($model)
         ]);
     }
 
@@ -95,11 +97,29 @@ class UsersController extends Controller
     {
         $model = new UserForm();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'passForm' => new PasswordForm(),
             ]);
+        }
+    }
+    
+    /**
+     * Форма смены пароля
+     * @param type $id
+     * @return type
+     * @throws ForbiddenHttpException
+     */
+    public function actionPswchange($id){
+        $passForm = PasswordForm::findOne($id);
+        if (!\Yii::$app->user->can(User::PERMISSION_EDITPROFILE, ['users' => $passForm]) &&
+                !\Yii::$app->user->can(User::ROLE_ADMIN)) {
+            throw new ForbiddenHttpException(Yii::t('yii','You are not allowed to perform this action.'));
+        }
+        if ($passForm->load(Yii::$app->request->post()) && $passForm->savePassword()) {
+            return $this->redirect(['update', 'id' => $passForm->id]);
         }
     }
 
@@ -117,13 +137,12 @@ class UsersController extends Controller
             throw new ForbiddenHttpException(Yii::t('yii','You are not allowed to perform this action.'));
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+        $model->load(Yii::$app->request->post());
+        $model->save(false);
+        return $this->render('update', [
+            'model' => $model,
+            'passForm' => new PasswordForm($model),
+        ]);
     }
 
     /**

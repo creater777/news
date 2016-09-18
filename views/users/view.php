@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\User;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Users */
@@ -41,7 +42,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Оповещать о новых новостях по email',
                 'value' => $model->notificationemail ? 'Да':'Нет',
             ],
-            'role',
+            [
+                'label' => 'Роль пользователя',
+                'value' => User::getRoleList()[$model->role],
+            ],
             'email:email',
         ],
     ]) ?>

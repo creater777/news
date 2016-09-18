@@ -16,7 +16,7 @@ $this->registerJs('
     $(document).ready(function(){
         $("select[name=newsInPage]").on("change", function(){
             document.cookie = "newsInPage="+this.value+";path=/";
-            $.pjax.reload({container:"#news"});
+            $.pjax.reload({container:"#news"}); 
         });
     });    
 ');

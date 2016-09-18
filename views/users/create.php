@@ -18,4 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
     ]) ?>
 
+    <?= $this->render('@app/views/access/_passForm', [
+        'model' => $passForm,
+    ]) ?>
 </div>

@@ -16,6 +16,13 @@ use app\models\User;
  */
 class News extends \yii\db\ActiveRecord
 {
+    
+    /**
+     * События модели
+     */
+    const EVENT_NEWS_UPDATE = 'News.Update';
+    const EVENT_NEWS_INSERT = 'News.Insert';
+
     /**
      * @inheritdoc
      */
@@ -98,7 +105,7 @@ class News extends \yii\db\ActiveRecord
             'value' => $value,
         ]));
     }
-
+    
     /**
      * Действие перед сохранение новости
      * при добавление устанавливается значение createat,
@@ -141,7 +148,10 @@ class News extends \yii\db\ActiveRecord
                     ->setSubject('Новая новость')
                     ->send();            
             }
+        } else{
+            Yii::$app->trigger(self::EVENT_NEWS_UPDATE);
         }
+            
         return true;
     }
 }

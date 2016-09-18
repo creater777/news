@@ -27,3 +27,4 @@ phpunit.phar
 /phpunit.xml
 
 tests/_output/*
+php_errors.log

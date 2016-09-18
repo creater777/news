@@ -11,16 +11,13 @@ use app\models\User;
  */
 class UserForm extends User
 {
-    private $passwordInner = '';
-    
     public function rules()
     {
         return [
-            [['username', 'password', 'email'], 'required'],
+            [['username', 'email'], 'required'],
             [['active', 'notificationonline', 'notificationemail'], 'integer'],
             [['username', 'email', 'role'], 'string', 'max' => 255],
-            [['password', 'authkey', 'accessToken'], 'string', 'max' => 255],
-            ['passwordVisual', 'compare', 'compareAttribute' => 'passwordVisual2'],
+            [['authkey', 'accessToken'], 'string', 'max' => 255],
             [['username'], 'unique'],
             ['email', 'validateEmail'],
         ];
@@ -33,8 +30,6 @@ class UserForm extends User
             'createat' => 'Дата создания',
             'dateCreateInner' => 'Дата создания',
             'username' => 'Имя пользователя',
-            'passwordVisual' => 'Пароль',
-            'passwordVisual2' => 'Повторите ввод',
             'active' => 'Активный',
             'notificationonline' => 'Включить оповещение на сайте',
             'notificationemail' => 'Оповещать о новых новостях по email',
@@ -44,27 +39,6 @@ class UserForm extends User
             'authkeyexpired' => 'Срок действия кода авторизации',
             'accessToken' => 'Access Token',
         ];
-    }
-
-    /**
-     * На форме пароль не отображаем
-     */
-    public function getPasswordVisual2(){
-        return $this->passwordInner;
-    }
-    
-    /**
-     * На форме пароль не отображаем
-     */
-    public function getPasswordVisual(){
-        return $this->passwordInner;
-    }
-
-    /**
-     * Установка пароля
-     */
-    public function setPasswordVisual($password){
-        $this->passwordInner = $password;
     }
 
     /**

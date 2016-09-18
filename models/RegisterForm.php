@@ -8,10 +8,8 @@ use yii\base\Model;
 /**
  * Форма регистрации
  */
-class RegisterForm extends Model
+class RegisterForm extends User
 {
-    public $username;
-    public $email;
     public $error;
     public $verifyCode;
 
@@ -78,12 +76,9 @@ class RegisterForm extends Model
             return false;
         }
 
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->generateAuthKey(Yii::$app->params['authKeyExpired']);
+        $this->generateAuthKey(Yii::$app->params['authKeyExpired']);
         try{
-            if (!$user->insert(false)){
+            if (!$this->insert(false)){
                 $this->addError('error', "Внутренняя ошибка при регистрации пользователя. Обратитесь к администратору.");
                 return false;
             }

@@ -53,13 +53,13 @@ class RbacController extends Controller
         $auth->addChild($user,$viewNews);
         
         $moder = $auth->createRole(User::ROLE_MODERATOR);
-        $moder->description = User::getRoleList()[User::ROLE_MODERATOR];;
+        $moder->description = User::getRoleList()[User::ROLE_MODERATOR];
         $auth->add($moder);
         $auth->addChild($moder,$user);
         $auth->addChild($moder,$editNews);
 
         $admin = $auth->createRole(User::ROLE_ADMIN);
-        $admin->description = User::getRoleList()[User::ROLE_ADMIN];;
+        $admin->description = User::getRoleList()[User::ROLE_ADMIN];
         $auth->add($admin);
         $auth->addChild($admin,$viewNews);
         $auth->addChild($admin,$editNews);
@@ -74,10 +74,10 @@ class RbacController extends Controller
         $adminUser->email = "admin@news.ru";
         $adminUser->setPassword("admin");
         $adminUser->activateUser();
+        $adminUser->setRole(User::ROLE_ADMIN);
         if (!$adminUser->insert(false)){
             throw new \Exception("Unable to add user admin");
         }
-        $adminUser->setRole(User::ROLE_ADMIN);
         
         //Заведение пользователя
         if ($userUser=User::findByUsername("user")){
@@ -88,10 +88,10 @@ class RbacController extends Controller
         $userUser->email = "user@news.ru";
         $userUser->setPassword("user");
         $userUser->activateUser();
+        $userUser->setRole(User::ROLE_USER);
         if (!$userUser->insert(false)){
             throw new \Exception("Unable to add user user");
         }
-        $userUser->setRole(User::ROLE_USER);
  
         //Заведение модератора
         if ($moderUser=User::findByUsername("moder")){
@@ -102,9 +102,9 @@ class RbacController extends Controller
         $moderUser->email = "moder@news.ru";
         $moderUser->setPassword("moder");
         $moderUser->activateUser();
+        $moderUser->setRole(User::ROLE_MODERATOR);
         if (!$moderUser->insert(false)){
             throw new \Exception("Unable to add user moder");
         }
-        $moderUser->setRole(User::ROLE_MODERATOR);
     }
 }

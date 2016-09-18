@@ -23,6 +23,16 @@ use Yii;
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     /**
+     * События модели
+     */
+    const EVENT_BEFORE_UPDATE = 'User.beforeUpdate';
+    const EVENT_AVTER_UPDATE = 'User.afterUpdate';
+    const EVENT_BEFORE_INSERT = 'User.beforeInsert';
+    const EVENT_AVTER_INSERT = 'User.afterInsert';
+    const EVENT_BEFORE_DELETE = 'User.befireDelete';
+    const EVENT_AVTER_DELETE = 'User.afterDelete';
+
+    /**
      * Роли пользователей
      */
     const ROLE_USER = "user";
@@ -37,6 +47,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const PERMISSION_EDITNEWS = "editNews";
     const PERMISSION_USEREDIT = "userEdit";
 
+    private $_role = null;
+    
     /**
      * Получение списка ролей
      * @return array
@@ -202,9 +214,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @param type $role
      */
     public function setRole($role){
-        $roleObject = Yii::$app->authManager->getRole($role);
-        Yii::$app->authManager->revokeAll($this->getId());
-        Yii::$app->authManager->assign($roleObject, $this->getId());
+        $this->_role = $role;
     }
     
     /**
@@ -212,15 +222,18 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * @return type
      */
     public function getRole(){
-        $roles = [];
-        $appRoles = Yii::$app->authManager->getRolesByUser($this->getId());
-        if (!is_array($appRoles) || empty($appRoles)){
-            return null;
+        if ($this->_role ==null){
+            $appRoles = Yii::$app->authManager->getRolesByUser($this->getId());
+            if (!is_array($appRoles) || empty($appRoles)){
+                return null;
+            }
+            $roles = [];
+            foreach ($appRoles as $role){
+                $roles[] = $role->name;
+            }
+            $this->_role = $roles[0];
         }
-        foreach ($appRoles as $role){
-            $roles[] = $role->name;
-        }
-        return $roles[0];
+        return $this->_role;
     }
     
    /**
@@ -248,6 +261,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
+        $roleObject = Yii::$app->authManager->getRole($this->_role);
+        if ($roleObject){
+            Yii::$app->authManager->revokeAll($this->getId());
+            Yii::$app->authManager->assign($roleObject, $this->getId());        
+        }
+
         if (Yii::$app->id == 'basic-console'){
             return true;
         }

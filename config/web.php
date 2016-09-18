@@ -6,7 +6,7 @@ $config = [
     'id' => 'basic',
     'language' => 'ru-RU',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'eventsInit'],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -49,6 +49,9 @@ $config = [
             'rules' => [
             ],
         ],
+        'eventsInit'=>[
+            'class' => 'app\models\EventsInit',
+        ],        
     ],
     'params' => $params,
 ];
