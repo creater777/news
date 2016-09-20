@@ -46,6 +46,7 @@ AppAsset::register($this);
     }
     if (Yii::$app->user->can(User::ROLE_ADMIN)){
         $items[] = ['label' => 'Пользователи', 'url' => ['/users']];
+        $items[] = ['label' => 'События', 'url' => ['/events']];
     }
     if (!Yii::$app->user->isGuest){
         $items[] = ['label' => 'Профиль', 'url' => ['/users/update', 'id' => Yii::$app->user->getId()]];

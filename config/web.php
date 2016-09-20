@@ -50,7 +50,7 @@ $config = [
             ],
         ],
         'eventsInit'=>[
-            'class' => 'app\models\EventsInit',
+            'class' => 'app\components\EventsInit',
         ],        
     ],
     'params' => $params,

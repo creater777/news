@@ -149,7 +149,7 @@ class News extends \yii\db\ActiveRecord
                     ->send();            
             }
         } else{
-            Yii::$app->trigger(self::EVENT_NEWS_UPDATE);
+//            Yii::$app->trigger(self::EVENT_NEWS_UPDATE);
         }
             
         return true;
