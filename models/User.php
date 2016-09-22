@@ -22,15 +22,6 @@ use Yii;
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    /**
-     * События модели
-     */
-    const EVENT_BEFORE_UPDATE = 'User.beforeUpdate';
-    const EVENT_AVTER_UPDATE = 'User.afterUpdate';
-    const EVENT_BEFORE_INSERT = 'User.beforeInsert';
-    const EVENT_AVTER_INSERT = 'User.afterInsert';
-    const EVENT_BEFORE_DELETE = 'User.befireDelete';
-    const EVENT_AVTER_DELETE = 'User.afterDelete';
 
     /**
      * Роли пользователей
@@ -124,8 +115,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      * Поиск всех активных
      * @return array User
      */
-    public static function findAllActual() {
-        return static::find()->andWhere('active = 1')->all();
+    public static function findActual()
+    {
+        return static::find()->andWhere('active = 1');
     }
     
     /**

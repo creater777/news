@@ -22,7 +22,16 @@ AppAsset::register($this);
     <?php $this->head() ?>
 </head>
 <body>
-<?php $this->beginBody() ?>
+<?php $this->beginBody();
+$this->registerJs('
+    $(document).ready(function(){
+        $("select[name=newsInPage]").on("change", function(){
+            document.cookie = "newsInPage="+this.value+";path=/";
+            $.pjax.reload({container:"#news"}); 
+        });
+    });    
+');
+?>
 
 <div class="wrap">
     <?php

@@ -12,14 +12,6 @@ use app\models\News;
 
 $this->title = 'Новости';
 $this->params['breadcrumbs'][] = $this->title;
-$this->registerJs('
-    $(document).ready(function(){
-        $("select[name=newsInPage]").on("change", function(){
-            document.cookie = "newsInPage="+this.value+";path=/";
-            $.pjax.reload({container:"#news"}); 
-        });
-    });    
-');
 ?>
 <div class="news-index">
 

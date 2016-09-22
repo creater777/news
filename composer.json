@@ -26,7 +26,8 @@
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-faker": "*",
         "phpunit/phpunit": "*",
-        "guzzle/guzzle": "~3.7"
+        "guzzle/guzzle": "~3.7",
+        "kartik-v/yii2-widget-depdrop": "*"
     },
     "config": {
         "process-timeout": 1800,

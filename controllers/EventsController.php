@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app;
 use app\models\Events;
 use app\models\User;
 
@@ -11,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 
 /**
  * EventController implements the CRUD actions for Events model.
@@ -27,7 +29,7 @@ class EventsController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'delete', 'create', 'update', 'view'],
+                        'actions' => ['index', 'delete', 'create', 'update', 'view', 'geteventlist'],
                         'allow' => true,
                         'roles' => [User::ROLE_ADMIN],
                     ],
@@ -37,6 +39,7 @@ class EventsController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'geteventlist' => ['POST'],
                 ],
             ],
         ];
@@ -119,6 +122,20 @@ class EventsController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * Получение списка событий из переданного класса
+     * @return string
+     */
+    public static function actionGeteventlist(){
+        Yii::warning($_POST['depdrop_parents']);
+        if (isset($_POST['depdrop_parents'])) {
+            $className = $_POST['depdrop_parents'];
+            return Json::encode(['output'=>Events::getEvents($className[0]), 'selected'=>'']);
+        } else{
+            return '';
+        }
+    }    
+    
     /**
      * Finds the Events model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

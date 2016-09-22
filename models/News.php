@@ -18,12 +18,6 @@ class News extends \yii\db\ActiveRecord
 {
     
     /**
-     * События модели
-     */
-    const EVENT_NEWS_UPDATE = 'News.Update';
-    const EVENT_NEWS_INSERT = 'News.Insert';
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
